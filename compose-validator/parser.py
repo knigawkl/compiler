@@ -1,4 +1,9 @@
+from scanner import Scanner
 
 
 class Parser:
-    pass
+    def __init__(self, scanner: Scanner):
+        pass
+
+    def parse(self):
+        pass
