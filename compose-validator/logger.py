@@ -3,5 +3,5 @@ import sys
 
 logger = logging.getLogger("compose-validator")
 logging.basicConfig(stream=sys.stdout,
-                    level=logging.INFO,
+                    level=logging.DEBUG,
                     format="%(message)s")

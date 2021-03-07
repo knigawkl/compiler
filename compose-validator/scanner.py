@@ -13,7 +13,7 @@ TOKEN_SPECIFICATION = [
     ('NUMBER', r'\d+(\.\d*)?'),
     ('ASSIGN', r':'),
     ('LI', r'-'),
-    ('ID', r'[A-Za-z_/-]+'),
+    ('ID', r'[A-Za-z_./-]+'),
     ('NEWLINE', r'\n'),
     ('SKIP', r'[ \t]')
 ]

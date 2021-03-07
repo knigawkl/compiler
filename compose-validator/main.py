@@ -3,7 +3,7 @@ from parser import Parser
 from utils import read_file
 
 
-COMPOSE_PATH = r"/mnt/c/Users/lk/OneDrive - Politechnika Warszawska/JFIK/projekt/compiler/compose-validator/fixtures/isod.yaml"
+COMPOSE_PATH = r"/mnt/c/Users/lk/OneDrive - Politechnika Warszawska/JFIK/projekt/compiler/compose-validator/fixtures/pamw.yaml"
 
 
 if __name__ == "__main__":
