@@ -1,14 +1,11 @@
 from scanner import Scanner
 from parser import Parser
-from utils import read_file
-
-
-COMPOSE_PATH = r"/mnt/c/Users/lk/OneDrive - Politechnika Warszawska/JFIK/projekt/compiler/compose-validator/fixtures/pamw.yaml"
+from utils import read_file, get_parser
 
 
 if __name__ == "__main__":
-    input_string = read_file(COMPOSE_PATH)
+    parser = get_parser()
+    args = parser.parse_args()
+    input_string = read_file(args.filepath)
+    Parser(Scanner(input_string)).parse()
 
-    Scanner(input_string)
-
-    # Parser(Scanner(input_string)).parse()
