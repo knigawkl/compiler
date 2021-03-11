@@ -7,5 +7,7 @@ fixtures="/mnt/c/Users/lk/OneDrive - Politechnika Warszawska/JFIK/projekt/compil
 python main.py --filepath "${fixtures}blank.yaml"
 python main.py --filepath "${fixtures}version.yaml"
 python main.py --filepath "${fixtures}services.yaml"
-python main.py --filepath "${fixtures}version-services.yaml"
+python main.py --filepath "${fixtures}version-services-ports.yaml"
+python main.py --filepath "${fixtures}version-services-networks.yaml"
+python main.py --filepath "${fixtures}version-services-ports-networks.yaml"
 # python main.py --filepath "${fixtures}isod.yaml"

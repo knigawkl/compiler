@@ -7,7 +7,7 @@ from logger import logger
 
 
 START_TOKENS = (TokenType.SERVICES, TokenType.VERSION, TokenType.NETWORKS, TokenType.VOLUMES, TokenType.PORTS)
-VALUE_TOKENS = (TokenType.NUMBER, TokenType.ID, TokenType.STRING, TokenType.BLANK)
+VALUE_TOKENS = (TokenType.NUMBER, TokenType.ID, TokenType.STRING)
 
 
 class Parser:
@@ -79,6 +79,28 @@ class Parser:
         else:
             raise UnknownStatement(self.token)
 
+    def service_dict(self):
+        """
+        Statements inside service are read here.
+        List of possible statements inside service is strictly constrained and listed below inside service_stmts
+        """
+        start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
+        service_stmts = {TokenType.VOLUMES: self.volumes_stmt,
+                 TokenType.PORTS: self.ports_stmt,
+                 TokenType.BUILD: self.build_stmt,
+                 TokenType.IMAGE: self.image_stmt,
+                 TokenType.ENVIRONMENT: self.environment_stmt,
+                 TokenType.DEPLOY: self.deploy_stmt,
+                 TokenType.NETWORKS: self.service_networks_stmt}
+        if self.token.type in service_stmts:
+            service_stmts[self.token.type]()
+        elif self.token.type == TokenType.EOF:
+            pass
+        else:
+            raise UnknownStatement(self.token)
+        if self.token.column == indent_level:
+            self.service_dict()
+
     def array(self, item_type: str = TokenType.STRING):
         if self.token.type == TokenType.LI:
             self.take_token(TokenType.LI)
@@ -87,47 +109,41 @@ class Parser:
         else:
             pass
 
-    def service_dict(self):  # services is a dict and dict values should be somehow heading to service_dict
-        # I assume that there is no required field inside service dict, but it does not make sense to define one
-        # without defining anything inside
-        stmts = {TokenType.VOLUMES: self.volumes_stmt,
-                 TokenType.PORTS: self.ports_stmt,
-                 TokenType.BUILD: self.build_stmt,
-                 TokenType.IMAGE: self.image_stmt,
-                 TokenType.ENVIRONMENT: self.environment_stmt,
-                 TokenType.DEPLOY: self.deploy_stmt}
-        if self.token.type in stmts:
-            stmts[self.token.type]()
-        else:
-            raise UnknownStatement(self.token)
-
     def services_dict(self):
+        """
+        IDs here are names of the services. Phrases like "wordpress:" are read
+        and then self.service_dict() is called in order to read content of each service
+        """
+        start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
         if self.token.type == TokenType.ID:
             self.take_token(TokenType.ID)
             self.take_token(TokenType.ASSIGN)
             self.service_dict()
-            self.services_dict()
+            self.table.add_row([start_line, self.token.line - 1, f"{TokenType.SERVICES}:{service_name}"])
+            if self.token.column == indent_level:
+                self.services_dict()
         else:
             pass
 
+    # def dictionary(self):
+    #     if self.token.type == TokenType.ID:
+    #         self.take_token(TokenType.ID)
+    #         self.take_token(TokenType.ASSIGN)
+    #         self.value()
+    #         self.dictionary()
+    #     else:
+    #         pass
+
     def services_stmt(self):
+        """
+        self.statement() has found services keyword and routes us here
+        phrase "services:" is read and then we start reading the services one by one
+        """
         start_line = self.token.line
         self.take_token(TokenType.SERVICES)
-        # if the next token is not indented, we assume that services dict is empty or invalid
-        # hence this should probably lead to an error
         self.take_token(TokenType.ASSIGN)
         self.services_dict()
         self.table.add_row([start_line, self.token.line - 1, TokenType.SERVICES])
-
-    def dictionary(self):
-        if self.token.type == TokenType.ID:
-            self.take_token(TokenType.ID)
-            self.take_token(TokenType.ASSIGN)
-            self.value()
-            self.dictionary()
-        # elif self.token.type in STMT_TOKENS
-        else:
-            pass
 
     def version_stmt(self):
         start_line = self.token.line
@@ -144,6 +160,13 @@ class Parser:
         self.table.add_row([start_line, self.token.line - 1, TokenType.PORTS])
 
     def networks_stmt(self):
+        start_line = self.token.line
+        self.take_token(TokenType.NETWORKS)
+        self.take_token(TokenType.ASSIGN)
+        # self.array(item_type=TokenType.ID) # this should be any dictionary
+        self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
+
+    def service_networks_stmt(self):
         start_line = self.token.line
         self.take_token(TokenType.NETWORKS)
         self.take_token(TokenType.ASSIGN)

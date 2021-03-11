@@ -17,7 +17,6 @@ class TokenType:
     NUMBER = 'number'
     ID = 'id'
     STRING = 'string'
-    BLANK = ''
 
     ASSIGN = 'assign'
     LI = 'li'

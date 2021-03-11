@@ -11,8 +11,10 @@ def read_file(filepath: str) -> str:
 def print_file(filepath: str):
     with open(filepath, 'r') as f:
         for i, line in enumerate(f, start=1):
-            logger.info('{} | {}'.format(i, line[:-1]))
-
+            if i < 10:
+                logger.info('{}  | {}'.format(i, line[:-1] if line[-1] == "\n" else line))
+            else:
+                logger.info('{} | {}'.format(i, line[:-1] if line[-1] == "\n" else line))
 
 def print_namedtuple(t, field_widths=25):
     if isinstance(field_widths, int):
