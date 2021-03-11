@@ -47,6 +47,10 @@ class Scanner:
                 value = match.group(match_type)
                 if match_type == TokenType.ID and value in KEYWORDS:
                     match_type = value
+                elif match_type == TokenType.ID and value == '-':
+                    match_type = TokenType.LI
+                elif match_type == TokenType.ID and value == ':':
+                    match_type = TokenType.ASSIGN
                 yield Token(match_type, value, line_number, match.start() - line_start)
             position = match.end()
             match = get_token(string, position)
