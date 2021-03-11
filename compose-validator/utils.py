@@ -3,9 +3,15 @@ import argparse
 from logger import logger
 
 
-def read_file(filename: str) -> str:
-    with open(filename, 'r') as f:
+def read_file(filepath: str) -> str:
+    with open(filepath, 'r') as f:
         return f.read()
+
+
+def print_file(filepath: str):
+    with open(filepath, 'r') as f:
+        for i, line in enumerate(f, start=1):
+            logger.info('{} | {}'.format(i, line[:-1]))
 
 
 def print_namedtuple(t, field_widths=25):

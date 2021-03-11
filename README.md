@@ -10,7 +10,7 @@ Task description (in Polish):
 ```
 Projekt 1: Uproszczony walidator dla podzbioru składni plików docker compose w języku YAML. 
 Minimalny zakres sprawdzanej składni powinien obejmować konstrukcje wykorzystujące słowa kluczowe: 
-version, services, build, ports, image, volumes, enviroment, networks i deploy.
+version, services, build, ports, image, volumes, environment, networks i deploy.
 
 Uwaga! Obrona projektu na pierwszym terminie zajęć. Projekt omawiamy będzie na wykładzie.
 

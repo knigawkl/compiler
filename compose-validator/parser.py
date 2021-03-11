@@ -7,7 +7,7 @@ from logger import logger
 
 
 START_TOKENS = (TokenType.SERVICES, TokenType.VERSION, TokenType.NETWORKS, TokenType.VOLUMES, TokenType.PORTS)
-VALUE_TOKENS = (TokenType.NUMBER, TokenType.ID, TokenType.STRING)
+VALUE_TOKENS = (TokenType.NUMBER, TokenType.ID, TokenType.STRING, TokenType.BLANK)
 
 
 class Parser:
@@ -28,12 +28,15 @@ class Parser:
     version_stmt -> version assign string
     # networks_stmt -> networks assign id assign
 
+
+
     array -> li value array
           -> eps
 
     value -> number
           -> id
           -> string
+          -> eps
     """
     def __init__(self, scanner: Scanner):
         logger.info("\nPerforming syntax analysis")
@@ -41,9 +44,10 @@ class Parser:
         self.token = self.next_token()
         self.table = PrettyTable()
         self.table.field_names = ['Start line', 'End line', 'Statement type']
+        self.indent_level = 0
 
     def __del__(self):
-        logger.info(self.table)
+        logger.info(self.table.get_string(sortby='Start line', sort_key=lambda row: int(row[0])))
 
     def take_token(self, token_type: str):
         if self.token.type != token_type:
@@ -67,19 +71,61 @@ class Parser:
 
     def statement(self):
         stmts = {TokenType.VERSION: self.version_stmt,
-                 TokenType.NETWORKS: self.network_stmt,
+                 TokenType.NETWORKS: self.networks_stmt,
                  TokenType.VOLUMES: self.volumes_stmt,
-                 TokenType.PORTS: self.ports_stmt}
+                 TokenType.SERVICES: self.services_stmt}
         if self.token.type in stmts:
             stmts[self.token.type]()
         else:
-            raise UnknownStatement
+            raise UnknownStatement(self.token)
 
     def array(self, item_type: str = TokenType.STRING):
         if self.token.type == TokenType.LI:
             self.take_token(TokenType.LI)
             self.value([item_type])
             self.array(item_type)
+        else:
+            pass
+
+    def service_dict(self):  # services is a dict and dict values should be somehow heading to service_dict
+        # I assume that there is no required field inside service dict, but it does not make sense to define one
+        # without defining anything inside
+        stmts = {TokenType.VOLUMES: self.volumes_stmt,
+                 TokenType.PORTS: self.ports_stmt,
+                 TokenType.BUILD: self.build_stmt,
+                 TokenType.IMAGE: self.image_stmt,
+                 TokenType.ENVIRONMENT: self.environment_stmt,
+                 TokenType.DEPLOY: self.deploy_stmt}
+        if self.token.type in stmts:
+            stmts[self.token.type]()
+        else:
+            raise UnknownStatement(self.token)
+
+    def services_dict(self):
+        if self.token.type == TokenType.ID:
+            self.take_token(TokenType.ID)
+            self.take_token(TokenType.ASSIGN)
+            self.service_dict()
+            self.services_dict()
+        else:
+            pass
+
+    def services_stmt(self):
+        start_line = self.token.line
+        self.take_token(TokenType.SERVICES)
+        # if the next token is not indented, we assume that services dict is empty or invalid
+        # hence this should probably lead to an error
+        self.take_token(TokenType.ASSIGN)
+        self.services_dict()
+        self.table.add_row([start_line, self.token.line - 1, TokenType.SERVICES])
+
+    def dictionary(self):
+        if self.token.type == TokenType.ID:
+            self.take_token(TokenType.ID)
+            self.take_token(TokenType.ASSIGN)
+            self.value()
+            self.dictionary()
+        # elif self.token.type in STMT_TOKENS
         else:
             pass
 
@@ -94,16 +140,33 @@ class Parser:
         start_line = self.token.line
         self.take_token(TokenType.PORTS)
         self.take_token(TokenType.ASSIGN)
-        self.array()
+        self.array(item_type=TokenType.STRING)
         self.table.add_row([start_line, self.token.line - 1, TokenType.PORTS])
 
-    def services_stmt(self):
-        pass
-
-    def network_stmt(self):
-        pass
+    def networks_stmt(self):
+        start_line = self.token.line
+        self.take_token(TokenType.NETWORKS)
+        self.take_token(TokenType.ASSIGN)
+        self.array(item_type=TokenType.ID)
+        self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
 
     def volumes_stmt(self):
+        start_line = self.token.line
+        self.take_token(TokenType.VOLUMES)
+        self.take_token(TokenType.ASSIGN)
+        self.array(item_type=TokenType.ID)
+        self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
+
+    def build_stmt(self):
+        pass
+
+    def image_stmt(self):
+        pass
+
+    def environment_stmt(self):
+        pass
+
+    def deploy_stmt(self):
         pass
 
     def value(self, allowed_types: [str] = VALUE_TOKENS):
@@ -111,4 +174,3 @@ class Parser:
             self.take_token(self.token.type)
         else:
             raise UnexpectedToken(f'Expected types: {allowed_types}, but got {self.token}')
-

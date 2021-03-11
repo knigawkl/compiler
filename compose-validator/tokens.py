@@ -17,9 +17,11 @@ class TokenType:
     NUMBER = 'number'
     ID = 'id'
     STRING = 'string'
+    BLANK = ''
 
     ASSIGN = 'assign'
     LI = 'li'
     NEWLINE = 'newline'
     SKIP = 'skip'
     EOF = 'eof'
+

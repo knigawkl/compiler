@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  wordpress:
+    ports:
+      - "8080:80"
+      - "880:80"
+      - "808:80"
+      - "88:80"
