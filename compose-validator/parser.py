@@ -67,7 +67,7 @@ class Parser:
     def __del__(self):
         logger.info(self.table.get_string(sortby='Start line', sort_key=lambda row: int(row[0])))
 
-    def take_token(self, token_type: str):
+    def __take_token(self, token_type: str):
         if self.token.type != token_type:
             raise UnexpectedToken(f'Expected type: {token_type}, but got {self.token}')
         if token_type != TokenType.EOF:
@@ -75,41 +75,41 @@ class Parser:
 
     def parse(self):
         if self.token.type in START_TOKENS or self.token.type == TokenType.EOF:
-            self.program()
-            self.take_token(TokenType.EOF)
+            self.__program()
+            self.__take_token(TokenType.EOF)
         else:
             raise UnexpectedStartToken(self.token)
 
-    def program(self):
+    def __program(self):
         if self.token.type in START_TOKENS:
-            self.statement()
-            self.program()
+            self.__statement()
+            self.__program()
         else:
             pass
 
-    def statement(self):
-        stmts = {TokenType.VERSION: self.version_stmt,
-                 TokenType.NETWORKS: self.networks_stmt,
-                 TokenType.VOLUMES: self.volumes_stmt,
-                 TokenType.SERVICES: self.services_stmt}
+    def __statement(self):
+        stmts = {TokenType.VERSION: self.__version_stmt,
+                 TokenType.NETWORKS: self.__networks_stmt,
+                 TokenType.VOLUMES: self.__volumes_stmt,
+                 TokenType.SERVICES: self.__services_stmt}
         if self.token.type in stmts:
             stmts[self.token.type]()
         else:
             raise UnknownStatement(self.token)
 
-    def service_statement(self):
+    def __service_statement(self):
         """
         Statements inside service are read here.
         List of possible statements inside service is strictly constrained and listed below inside service_stmts.
         """
         start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
-        service_stmts = {TokenType.PORTS: self.ports_stmt,
-                         TokenType.BUILD: self.build_stmt,
-                         TokenType.IMAGE: self.image_stmt,
-                         TokenType.ENVIRONMENT: self.environment_stmt,
-                         TokenType.DEPLOY: self.deploy_stmt,
-                         TokenType.NETWORKS: self.service_networks_stmt,
-                         TokenType.VOLUMES: self.service_volumes_stmt,}
+        service_stmts = {TokenType.PORTS: self.__ports_stmt,
+                         TokenType.BUILD: self.__build_stmt,
+                         TokenType.IMAGE: self.__image_stmt,
+                         TokenType.ENVIRONMENT: self.__environment_stmt,
+                         TokenType.DEPLOY: self.__deploy_stmt,
+                         TokenType.NETWORKS: self.__service_networks_stmt,
+                         TokenType.VOLUMES: self.__service_volumes_stmt, }
         if self.token.type in service_stmts:
             service_stmts[self.token.type]()
         elif self.token.type == TokenType.EOF:
@@ -117,137 +117,137 @@ class Parser:
         else:
             raise UnknownStatement(self.token)
         if self.token.column == indent_level:
-            self.service_statement()
+            self.__service_statement()
 
-    def array(self, item_type: str = TokenType.STRING):
+    def __array(self, item_type: str = TokenType.STRING):
         if self.token.type == TokenType.LI:
-            self.take_token(TokenType.LI)
-            self.value([item_type])
-            self.array(item_type)
+            self.__take_token(TokenType.LI)
+            self.__value([item_type])
+            self.__array(item_type)
         else:
             pass
 
-    def volume_array(self):
+    def __volume_array(self):
         if self.token.type == TokenType.LI:
-            self.take_token(TokenType.LI)
-            self.value([TokenType.ID])
-            self.take_token(TokenType.ASSIGN)
-            self.value([TokenType.ID])
-            self.volume_array()
+            self.__take_token(TokenType.LI)
+            self.__value([TokenType.ID])
+            self.__take_token(TokenType.ASSIGN)
+            self.__value([TokenType.ID])
+            self.__volume_array()
         else:
             pass
 
-    def dictionary(self):
+    def __dictionary(self):
         start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
         if self.token.type == TokenType.ID:
-            self.take_token(TokenType.ID)
-            self.take_token(TokenType.ASSIGN)
+            self.__take_token(TokenType.ID)
+            self.__take_token(TokenType.ASSIGN)
             if self.token.line == start_line:
-                self.value()
+                self.__value()
             if self.token.column == indent_level:
-                self.dictionary()
+                self.__dictionary()
         else:
             pass
 
-    def services_dict(self):
+    def __take_dict(self):
+        self.__take_token(TokenType.ASSIGN)
+        self.__dictionary()
+
+    def __services_dict(self):
         """
         IDs here are names of the services. Phrases like "wordpress:" are read
         and then self.service_dict() is called in order to read content of each service
         """
         start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
         if self.token.type == TokenType.ID:
-            self.take_token(TokenType.ID)
-            self.take_token(TokenType.ASSIGN)
-            self.service_statement()
+            self.__take_token(TokenType.ID)
+            self.__take_token(TokenType.ASSIGN)
+            self.__service_statement()
             self.table.add_row([start_line, self.token.line - 1, f"{TokenType.SERVICES}:{service_name}"])
             if self.token.column == indent_level:
-                self.services_dict()
+                self.__services_dict()
         else:
             pass
 
-    def services_stmt(self):
+    def __services_stmt(self):
         """
         self.statement() has found services keyword and routes us here
         phrase "services:" is read and then we start reading the services one by one
         """
         start_line = self.token.line
-        self.take_token(TokenType.SERVICES)
-        self.take_token(TokenType.ASSIGN)
-        self.services_dict()
-        self.table.add_row([start_line, self.token.line - 1, TokenType.SERVICES])
+        self.__take_token(TokenType.SERVICES)
+        self.__take_token(TokenType.ASSIGN)
+        self.__services_dict()
+        self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.SERVICES])
 
-    def version_stmt(self):
+    def __version_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.VERSION)
-        self.take_token(TokenType.ASSIGN)
-        self.value([TokenType.STRING])
-        self.table.add_row([start_line, self.token.line - 1, TokenType.VERSION])
+        self.__take_token(TokenType.VERSION)
+        self.__take_token(TokenType.ASSIGN)
+        self.__value([TokenType.STRING])
+        self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.VERSION])
 
-    def ports_stmt(self):
+    def __ports_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.PORTS)
-        self.take_token(TokenType.ASSIGN)
-        self.array(item_type=TokenType.STRING)
+        self.__take_token(TokenType.PORTS)
+        self.__take_token(TokenType.ASSIGN)
+        self.__array(item_type=TokenType.STRING)
         self.table.add_row([start_line, self.token.line - 1, TokenType.PORTS])
 
-    def service_networks_stmt(self):
+    def __service_networks_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.NETWORKS)
-        self.take_token(TokenType.ASSIGN)
-        self.array(item_type=TokenType.ID)
+        self.__take_token(TokenType.NETWORKS)
+        self.__take_token(TokenType.ASSIGN)
+        self.__array(item_type=TokenType.ID)
         self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
 
-    def service_volumes_stmt(self):
+    def __service_volumes_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.VOLUMES)
-        self.take_token(TokenType.ASSIGN)
-        self.volume_array()
+        self.__take_token(TokenType.VOLUMES)
+        self.__take_token(TokenType.ASSIGN)
+        self.__volume_array()
         self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
 
-    def volumes_stmt(self):
+    def __volumes_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.VOLUMES)
-        self.take_token(TokenType.ASSIGN)
-        self.dictionary()
-        self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
+        self.__take_token(TokenType.VOLUMES)
+        self.__take_dict()
+        self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.VOLUMES])
 
-    def build_stmt(self):
+    def __build_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.BUILD)
-        self.take_token(TokenType.ASSIGN)
-        self.value([TokenType.ID])
+        self.__take_token(TokenType.BUILD)
+        self.__take_token(TokenType.ASSIGN)
+        self.__value([TokenType.ID])
         self.table.add_row([start_line, self.token.line - 1, TokenType.BUILD])
 
-    def image_stmt(self):
+    def __image_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.IMAGE)
-        self.take_token(TokenType.ASSIGN)
-        self.value([TokenType.ID])
+        self.__take_token(TokenType.IMAGE)
+        self.__take_token(TokenType.ASSIGN)
+        self.__value([TokenType.ID])
         self.table.add_row([start_line, self.token.line - 1, TokenType.IMAGE])
 
-    def networks_stmt(self):
+    def __networks_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.NETWORKS)
-        self.take_token(TokenType.ASSIGN)
-        self.dictionary()
-        self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
+        self.__take_token(TokenType.NETWORKS)
+        self.__take_dict()
+        self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.NETWORKS])
 
-    def environment_stmt(self):
+    def __environment_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.ENVIRONMENT)
-        self.take_token(TokenType.ASSIGN)
-        self.dictionary()
+        self.__take_token(TokenType.ENVIRONMENT)
+        self.__take_dict()
         self.table.add_row([start_line, self.token.line - 1, TokenType.ENVIRONMENT])
 
-    def deploy_stmt(self):
+    def __deploy_stmt(self):
         start_line = self.token.line
-        self.take_token(TokenType.DEPLOY)
-        self.take_token(TokenType.ASSIGN)
-        self.dictionary()
+        self.__take_token(TokenType.DEPLOY)
+        self.__take_dict()
         self.table.add_row([start_line, self.token.line - 1, TokenType.DEPLOY])
 
-    def value(self, allowed_types: [str] = VALUE_TOKENS):
+    def __value(self, allowed_types: [str] = VALUE_TOKENS):
         if self.token.type in allowed_types:
-            self.take_token(self.token.type)
+            self.__take_token(self.token.type)
         else:
             raise UnexpectedToken(f'Expected types: {allowed_types}, but got {self.token}')
