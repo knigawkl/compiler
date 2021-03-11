@@ -12,31 +12,49 @@ VALUE_TOKENS = (TokenType.NUMBER, TokenType.ID, TokenType.STRING)
 
 class Parser:
     """ Performs syntax analysis
-    Backus-Naur Form:
-    start -> program EOF
-    program -> statement program
-            -> eps
 
-    statement -> services_stmt
-    statement -> networks_stmt
-    statement -> volumes_stmt
-    statement -> version_stmt
+    Backus-Naur Form (BNF grammar):
 
-    ports_stmt -> ports assign array
-    # volumes_stmt -> volumes assign id assign
-    #              -> volumes assign id assign id 
-    version_stmt -> version assign string
-    # networks_stmt -> networks assign id assign
+    <services> ::= 'services'
+    <version> ::= 'version'
+    <networks> ::= 'networks'
+    <volumes> ::= 'volumes'
+    <build> ::= 'build'
+    <ports> ::= 'ports'
+    <image> ::= 'image'
+    <environment> ::= 'environment'
+    <deploy> ::= 'deploy'
 
+    <number> ::= r'\d+(\.\d*)?'
+    <id> ::= r'[A-Za-z_./-]+'
+    <string> ::= r'\"(.*?)\"'
 
+    <assign> ::= ':'
+    <li> ::= '-'
+    <eof> ::= end of file
+    <eps> ::= blank
 
-    array -> li value array
-          -> eps
+    <array> ::= <li> <value> <array> | <eps>
+    <volume_array> ::= <li> <value> <assign> <value> <array> | <eps>
+    <dictionary> ::= <id> <assign> <value> | <eps>
+    <value> ::= <number> | <id> | <string> | <eps>
 
-    value -> number
-          -> id
-          -> string
-          -> eps
+    <start> ::= <program> <eof>
+    <program> ::= <statement> <program> | <eps>
+    <statement> ::= <version_stmt> | <services_stmt> | <networks_stmt> | <volumes_stmt>
+    <services_stmt> ::= <ports_stmt> | <build_stmt> | <image_stmt> | <environment_stmt> | <deploy_stmt> |
+                        <service_networks_stmt> | <service_volumes_stmt>
+    <version_stmt> ::= <version> <assign> <string>
+    <networks_stmt> ::= <networks> <dictionary>
+    <volumes_stmt> ::= <volumes> <dictionary>
+
+    <ports_stmt> ::= <ports> <assign> <array>
+    <build_stmt> ::= <build> <assign> <id>
+    <image_stmt> ::= <image> <assign> <id>
+    <environment_stmt> ::= <environment> <dictionary>
+    <deploy_stmt> ::= <deploy> <dictionary>
+    <service_networks_stmt> ::= <networks> <assign> <array>
+    <service_volumes_stmt> ::= <volumes> <assign> <volume_array>
     """
     def __init__(self, scanner: Scanner):
         logger.info("\nPerforming syntax analysis")
@@ -79,10 +97,10 @@ class Parser:
         else:
             raise UnknownStatement(self.token)
 
-    def service_dict(self):
+    def service_statement(self):
         """
         Statements inside service are read here.
-        List of possible statements inside service is strictly constrained and listed below inside service_stmts
+        List of possible statements inside service is strictly constrained and listed below inside service_stmts.
         """
         start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
         service_stmts = {TokenType.PORTS: self.ports_stmt,
@@ -99,7 +117,7 @@ class Parser:
         else:
             raise UnknownStatement(self.token)
         if self.token.column == indent_level:
-            self.service_dict()
+            self.service_statement()
 
     def array(self, item_type: str = TokenType.STRING):
         if self.token.type == TokenType.LI:
@@ -119,6 +137,18 @@ class Parser:
         else:
             pass
 
+    def dictionary(self):
+        start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
+        if self.token.type == TokenType.ID:
+            self.take_token(TokenType.ID)
+            self.take_token(TokenType.ASSIGN)
+            if self.token.line == start_line:
+                self.value()
+            if self.token.column == indent_level:
+                self.dictionary()
+        else:
+            pass
+
     def services_dict(self):
         """
         IDs here are names of the services. Phrases like "wordpress:" are read
@@ -128,21 +158,12 @@ class Parser:
         if self.token.type == TokenType.ID:
             self.take_token(TokenType.ID)
             self.take_token(TokenType.ASSIGN)
-            self.service_dict()
+            self.service_statement()
             self.table.add_row([start_line, self.token.line - 1, f"{TokenType.SERVICES}:{service_name}"])
             if self.token.column == indent_level:
                 self.services_dict()
         else:
             pass
-
-    # def dictionary(self):
-    #     if self.token.type == TokenType.ID:
-    #         self.take_token(TokenType.ID)
-    #         self.take_token(TokenType.ASSIGN)
-    #         self.value()
-    #         self.dictionary()
-    #     else:
-    #         pass
 
     def services_stmt(self):
         """
@@ -169,13 +190,6 @@ class Parser:
         self.array(item_type=TokenType.STRING)
         self.table.add_row([start_line, self.token.line - 1, TokenType.PORTS])
 
-    def networks_stmt(self):
-        start_line = self.token.line
-        self.take_token(TokenType.NETWORKS)
-        self.take_token(TokenType.ASSIGN)
-        # self.array(item_type=TokenType.ID) # this should be any dictionary
-        self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
-
     def service_networks_stmt(self):
         start_line = self.token.line
         self.take_token(TokenType.NETWORKS)
@@ -192,22 +206,45 @@ class Parser:
 
     def volumes_stmt(self):
         start_line = self.token.line
-        # self.take_token(TokenType.VOLUMES)
-        # self.take_token(TokenType.ASSIGN)
-        # self.volume_array()
+        self.take_token(TokenType.VOLUMES)
+        self.take_token(TokenType.ASSIGN)
+        self.dictionary()
         self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
 
     def build_stmt(self):
-        pass
+        start_line = self.token.line
+        self.take_token(TokenType.BUILD)
+        self.take_token(TokenType.ASSIGN)
+        self.value([TokenType.ID])
+        self.table.add_row([start_line, self.token.line - 1, TokenType.BUILD])
 
     def image_stmt(self):
-        pass
+        start_line = self.token.line
+        self.take_token(TokenType.IMAGE)
+        self.take_token(TokenType.ASSIGN)
+        self.value([TokenType.ID])
+        self.table.add_row([start_line, self.token.line - 1, TokenType.IMAGE])
+
+    def networks_stmt(self):
+        start_line = self.token.line
+        self.take_token(TokenType.NETWORKS)
+        self.take_token(TokenType.ASSIGN)
+        self.dictionary()
+        self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
 
     def environment_stmt(self):
-        pass
+        start_line = self.token.line
+        self.take_token(TokenType.ENVIRONMENT)
+        self.take_token(TokenType.ASSIGN)
+        self.dictionary()
+        self.table.add_row([start_line, self.token.line - 1, TokenType.ENVIRONMENT])
 
     def deploy_stmt(self):
-        pass
+        start_line = self.token.line
+        self.take_token(TokenType.DEPLOY)
+        self.take_token(TokenType.ASSIGN)
+        self.dictionary()
+        self.table.add_row([start_line, self.token.line - 1, TokenType.DEPLOY])
 
     def value(self, allowed_types: [str] = VALUE_TOKENS):
         if self.token.type in allowed_types:
