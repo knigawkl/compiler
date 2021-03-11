@@ -85,13 +85,13 @@ class Parser:
         List of possible statements inside service is strictly constrained and listed below inside service_stmts
         """
         start_line, service_name, indent_level = self.token.line, self.token.value, self.token.column
-        service_stmts = {TokenType.VOLUMES: self.volumes_stmt,
-                 TokenType.PORTS: self.ports_stmt,
-                 TokenType.BUILD: self.build_stmt,
-                 TokenType.IMAGE: self.image_stmt,
-                 TokenType.ENVIRONMENT: self.environment_stmt,
-                 TokenType.DEPLOY: self.deploy_stmt,
-                 TokenType.NETWORKS: self.service_networks_stmt}
+        service_stmts = {TokenType.PORTS: self.ports_stmt,
+                         TokenType.BUILD: self.build_stmt,
+                         TokenType.IMAGE: self.image_stmt,
+                         TokenType.ENVIRONMENT: self.environment_stmt,
+                         TokenType.DEPLOY: self.deploy_stmt,
+                         TokenType.NETWORKS: self.service_networks_stmt,
+                         TokenType.VOLUMES: self.service_volumes_stmt,}
         if self.token.type in service_stmts:
             service_stmts[self.token.type]()
         elif self.token.type == TokenType.EOF:
@@ -106,6 +106,16 @@ class Parser:
             self.take_token(TokenType.LI)
             self.value([item_type])
             self.array(item_type)
+        else:
+            pass
+
+    def volume_array(self):
+        if self.token.type == TokenType.LI:
+            self.take_token(TokenType.LI)
+            self.value([TokenType.ID])
+            self.take_token(TokenType.ASSIGN)
+            self.value([TokenType.ID])
+            self.volume_array()
         else:
             pass
 
@@ -173,11 +183,18 @@ class Parser:
         self.array(item_type=TokenType.ID)
         self.table.add_row([start_line, self.token.line - 1, TokenType.NETWORKS])
 
-    def volumes_stmt(self):
+    def service_volumes_stmt(self):
         start_line = self.token.line
         self.take_token(TokenType.VOLUMES)
         self.take_token(TokenType.ASSIGN)
-        self.array(item_type=TokenType.ID)
+        self.volume_array()
+        self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
+
+    def volumes_stmt(self):
+        start_line = self.token.line
+        # self.take_token(TokenType.VOLUMES)
+        # self.take_token(TokenType.ASSIGN)
+        # self.volume_array()
         self.table.add_row([start_line, self.token.line - 1, TokenType.VOLUMES])
 
     def build_stmt(self):

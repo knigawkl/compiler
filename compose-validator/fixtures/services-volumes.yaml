@@ -1,0 +1,5 @@
+services:
+  wordpress:
+    volumes:
+      - db-data:/var/lib/mysql/data
+      - db-data-lol:/var/lib/mysql/lol
