@@ -35,7 +35,7 @@ class Parser:
     <eps> ::= blank
 
     <array> ::= <li> <value> <array> | <eps>
-    <volume_array> ::= <li> <value> <assign> <value> <array> | <eps>
+    <volume_array> ::= <li> <value> <assign> <value> <volume_array> | <eps>
     <dictionary> ::= <id> <assign> <value> <dictionary> | <eps>
     <value> ::= <number> | <id> | <string> | <eps>
 
