@@ -32,3 +32,11 @@ def get_parser() -> argparse.PARSER:
                         help='Path to docker-compose file',
                         default='fixtures/isod.yaml')
     return parser
+
+
+def represents_int(s: str) -> bool:
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False

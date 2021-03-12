@@ -4,6 +4,7 @@ from scanner import Scanner
 from exceptions import UnexpectedStartToken, UnexpectedToken, UnknownStatement
 from tokens import TokenType
 from logger import logger
+from utils import represents_int
 
 
 START_TOKENS = (TokenType.SERVICES, TokenType.VERSION, TokenType.NETWORKS, TokenType.VOLUMES, TokenType.PORTS)
@@ -184,6 +185,7 @@ class Parser:
         start_line = self.token.line
         self.__take_token(TokenType.VERSION)
         self.__take_token(TokenType.ASSIGN)
+        self.__validate_string(".")
         self.__value([TokenType.STRING])
         self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.VERSION])
 
@@ -245,6 +247,15 @@ class Parser:
         self.__take_token(TokenType.DEPLOY)
         self.__take_dict()
         self.table.add_row([start_line, self.token.line - 1, TokenType.DEPLOY])
+
+    def __validate_string(self, separator):
+        """ Validate version/port string """
+        version_str = self.token.value
+        version_content = version_str.strip("\"")
+        version_parts = version_content.split(separator)
+        for part in version_parts:
+            if not represents_int(part):
+                raise UnexpectedToken("Improper string content", self.token._replace(type = "version"))
 
     def __value(self, allowed_types: [str] = VALUE_TOKENS):
         if self.token.type in allowed_types:
