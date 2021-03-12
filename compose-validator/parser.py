@@ -25,36 +25,38 @@ class Parser:
     <image> ::= 'image'
     <environment> ::= 'environment'
     <deploy> ::= 'deploy'
-
-    <number> ::= r'\d+(\.\d*)?'
-    <id> ::= r'[A-Za-z_./-]+'
-    <string> ::= r'\"(.*?)\"'
-
+    # <number> ::= r'\d+(\.\d*)?'
+    # <id> ::= r'[A-Za-z_./-]+'
+    # <string> ::= r'\"(.*?)\"'
     <assign> ::= ':'
     <li> ::= '-'
+    <quote> ::= '\"'
+    <dot> ::= '.'
     <eof> ::= end of file
     <eps> ::= blank
-
-    <array> ::= <li> <value> <array> | <eps>
-    <volume_array> ::= <li> <value> <assign> <value> <volume_array> | <eps>
+    <ports_string> ::= <quote> <number> <assign> <number> <quote>
+    <value> ::= <number> | <id> | <string> | <port_string> | <version_string> | <eps>
+    <version_string> ::= <quote> <number> <dot> <number> <quote> | <quote> <number> <quote>
+    <string_array> ::= <li> <string> <string_array> | <eps>
+    <ports_string_array> ::= <li> <ports_string> <ports_string_array> | <eps>
+    <number_array> ::= <li> <number> <number_array> | <eps>
+    <id_array> ::= <li> <id> <id_array> | <eps>
+    <volume_array> ::= <li> <id> <assign> <id> <volume_array> | <eps>
     <dictionary> ::= <id> <assign> <value> <dictionary> | <eps>
-    <value> ::= <number> | <id> | <string> | <eps>
-
     <start> ::= <program> <eof>
     <program> ::= <statement> <program> | <eps>
     <statement> ::= <version_stmt> | <services_stmt> | <networks_stmt> | <volumes_stmt>
     <services_stmt> ::= <ports_stmt> | <build_stmt> | <image_stmt> | <environment_stmt> | <deploy_stmt> |
                         <service_networks_stmt> | <service_volumes_stmt>
-    <version_stmt> ::= <version> <assign> <string>
+    <version_stmt> ::= <version> <assign> <version_string>
     <networks_stmt> ::= <networks> <dictionary>
     <volumes_stmt> ::= <volumes> <dictionary>
-
-    <ports_stmt> ::= <ports> <assign> <array>
+    <ports_stmt> ::= <ports> <assign> <ports_string_array>
     <build_stmt> ::= <build> <assign> <id>
     <image_stmt> ::= <image> <assign> <id>
     <environment_stmt> ::= <environment> <dictionary>
     <deploy_stmt> ::= <deploy> <dictionary>
-    <service_networks_stmt> ::= <networks> <assign> <array>
+    <service_networks_stmt> ::= <networks> <assign> <id_array>
     <service_volumes_stmt> ::= <volumes> <assign> <volume_array>
     """
     def __init__(self, scanner: Scanner):
@@ -120,9 +122,11 @@ class Parser:
         if self.token.column == indent_level:
             self.__service_statement()
 
-    def __array(self, item_type: str = TokenType.STRING):
+    def __array(self, item_type: str = TokenType.STRING, is_ports: bool = False):
         if self.token.type == TokenType.LI:
             self.__take_token(TokenType.LI)
+            if is_ports:
+                self.__validate_ports_string()
             self.__value([item_type])
             self.__array(item_type)
         else:
@@ -185,7 +189,7 @@ class Parser:
         start_line = self.token.line
         self.__take_token(TokenType.VERSION)
         self.__take_token(TokenType.ASSIGN)
-        self.__validate_string(".")
+        self.__validate_version_string(separator=".")
         self.__value([TokenType.STRING])
         self.table.add_row([start_line, self.token.line - 1 if (self.token.line - 1) > 0 else 1, TokenType.VERSION])
 
@@ -193,7 +197,7 @@ class Parser:
         start_line = self.token.line
         self.__take_token(TokenType.PORTS)
         self.__take_token(TokenType.ASSIGN)
-        self.__array(item_type=TokenType.STRING)
+        self.__array(item_type=TokenType.STRING, is_ports=True)
         self.table.add_row([start_line, self.token.line - 1, TokenType.PORTS])
 
     def __service_networks_stmt(self):
@@ -248,14 +252,25 @@ class Parser:
         self.__take_dict()
         self.table.add_row([start_line, self.token.line - 1, TokenType.DEPLOY])
 
-    def __validate_string(self, separator):
-        """ Validate version/port string """
+    def __validate_version_string(self, separator):
+        """ Validate version string """
         version_str = self.token.value
         version_content = version_str.strip("\"")
         version_parts = version_content.split(separator)
         for part in version_parts:
             if not represents_int(part):
-                raise UnexpectedToken("Improper string content", self.token._replace(type = "version"))
+                raise UnexpectedToken("Improper version string content", self.token._replace(type = "version"))
+
+    def __validate_ports_string(self):
+        """ Validate ports string """
+        ports_str = self.token.value
+        ports_content = ports_str.strip("\"")
+        ports_parts = ports_content.split(":")
+        if len(ports_parts) != 2:
+            raise UnexpectedToken("Improper ports string content", self.token._replace(type="ports"))
+        for part in ports_parts:
+            if not represents_int(part):
+                raise UnexpectedToken("Improper ports string content", self.token._replace(type = "ports"))
 
     def __value(self, allowed_types: [str] = VALUE_TOKENS):
         if self.token.type in allowed_types:
