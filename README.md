@@ -1,6 +1,9 @@
 # compiler
 Project for Formal Languages and Compilers course
 
+### Language manual
+#### TODO
+
 ### compose-validator
 Simplified syntax validator for a subset of docker-compose yaml files.
 

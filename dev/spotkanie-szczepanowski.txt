@@ -1,0 +1,19 @@
+Generator to najważniejsza część projektu.
+Pierwsza część 7. maja.
+Druga część najpóźniej 11. czerwca.
+Preferowany 28. maja. Wtedy ocenianie przychylnym okiem.
+Przygotować instrukcję obsługi języka, opisać gramatykę.
+Przy rozszerzaniu typów w pierwszym projekcie, spodziewana jest obsługa rzutowania między typami.
+Jeśli chodzi o obsługę operacji arytmetycznych, to mile widziane są bajery takie jak potęgowanie, dzielenie, modulo, ale najważniejsze to te 4 podstawowe.
+Dobrze żeby można było też wykonywać działania na zmiennych.
+Dobrze żeby była obsługa nawiasów.
+Obsługa błędów ma być na poziomie, więc trzeba wywalić niespodziewany token w tej linijce w tej kolumnie itp.
+Obsługa zmiennych tablicowych: żeby dało się zainicjalizować, zmienić wartości, odnieść się do któregoś elementu tablicy (indeksowanie).
+Obsługa ciągu znaków -- żeby dało się inicjalizować, wczytywać do tego napisu, wypisywać wartość, fajnie żeby było rzutowanie na liczbę z tego napisu, konkatenację napisów.
+Obsłuzyć wyrażenie wewnątrz ifa, może jakiś operator porównania.
+Dobrze żeby udało się też zrobić else.
+Przy pętlach dobrze, żeby można było je wykonać x razy, gdzie x jest jakąś zmienną.
+Fajnie jeśli będą obsłużone zmienne lokalne, a nie tylko globalne.
+W rzozszerzeniu o struktury chodzi o to, aby można było je zdefiniować, tworzyć obiekty tego typu, ważne żeby dwie struktury tego sameg typu ale o innych wartościach pól mogły mieć właśnie różne wartości w tych polach.
+Wybór narzędzia jest dowolny, ale narzędzia które same będą generować kod llvm są niedopuszczalne.
+

@@ -1,0 +1,5 @@
+Prefered development setup installation steps
+- install wsl2 on Windows 10
+- create Ubuntu 20.04 LTS instance
+- sudo apt install openjdk-11-jdk (check with: java --version)
+
