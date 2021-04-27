@@ -17,3 +17,5 @@ Fajnie jeśli będą obsłużone zmienne lokalne, a nie tylko globalne.
 W rzozszerzeniu o struktury chodzi o to, aby można było je zdefiniować, tworzyć obiekty tego typu, ważne żeby dwie struktury tego sameg typu ale o innych wartościach pól mogły mieć właśnie różne wartości w tych polach.
 Wybór narzędzia jest dowolny, ale narzędzia które same będą generować kod llvm są niedopuszczalne.
 
+Prawy PM + generate ANTLR
+
