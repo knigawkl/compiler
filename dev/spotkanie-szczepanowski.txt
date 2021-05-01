@@ -17,5 +17,20 @@ Fajnie jeśli będą obsłużone zmienne lokalne, a nie tylko globalne.
 W rzozszerzeniu o struktury chodzi o to, aby można było je zdefiniować, tworzyć obiekty tego typu, ważne żeby dwie struktury tego sameg typu ale o innych wartościach pól mogły mieć właśnie różne wartości w tych polach.
 Wybór narzędzia jest dowolny, ale narzędzia które same będą generować kod llvm są niedopuszczalne.
 
-Prawy PM + generate ANTLR
+Prawy PM + generate ANTLR.
+Nie edytować plików wygenerowanych, bo potem kolejna generacja nam to nadpisze.
+
+W ramach drugiego projektu będziemy musieli za pomocą generatora wygenerować plik ll.
+To już raczej przy pomocy C i clang.
+clang -emit-llvm -S sample.c
+W tym poradniku do języka trzeba wszystkie główne funkcjonalności zawrzeć.
+To się przyda też nam żeby pamiętać jak wygląda nasz język.
+Też żeby szybko ogarnąć co ten drugi dodał ostatnio.
+
+Typy rzeczywiste i całkowite i rzutowanie muszą być na pierwsze spotkanie gotowe.
+Obsługa standardowego we/wy też.
+Operacje arytmetyczne powinny działać także na zmiennych.
+Komunikat nieprawidłowy token, jak będzie coś w stylu spodziewano się tego, a dostano to to w ogóle pięknie będzie.
+Konkatenacja napisów powinna być możliwa.
+Wewnątrz ifa powinno się dać zrobić wyrażenie, nie tylko if True ale coś większego.
 
