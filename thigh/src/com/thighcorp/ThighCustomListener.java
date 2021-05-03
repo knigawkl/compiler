@@ -5,9 +5,11 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, String> variableMap = new HashMap();
+    HashSet<String> variables = new HashSet<String>();
     Double num_val = null;
     String text_val = null;
 
@@ -53,7 +55,12 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitRead_statement(ThighParser.Read_statementContext ctx) {
-
+        String ID = ctx.ID().getText();
+        if( ! variables.contains(ID) ) {
+            variables.add(ID);
+            LLVMGenerator.declare(ID);
+        }
+        LLVMGenerator.scanf(ID);
     }
 
     @Override

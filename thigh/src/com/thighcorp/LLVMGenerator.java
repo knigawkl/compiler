@@ -7,6 +7,7 @@ class LLVMGenerator {
     static int str_i = 0;
     static int ch_i = 0;
     static int fun_i = 1;
+    static int reg = 1;
 
     static String generate() {
         String text;
@@ -44,4 +45,14 @@ class LLVMGenerator {
         str_i++;
         fun_i++;
     }
+
+    static void scanf(String id){
+        main_text += "%"+reg+" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32* %"+id+")\n";
+        reg++;
+    }
+
+    static void declare(String id){
+        main_text += "%"+id+" = alloca i32\n";
+    }
+
 }
