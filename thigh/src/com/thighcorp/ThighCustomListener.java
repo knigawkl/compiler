@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, String> variableMap = new HashMap();
     Double num_val = null;
-    String text_val = "";
+    String text_val = null;
 
     @Override
     public void enterProgram(ThighParser.ProgramContext ctx) {
@@ -125,6 +125,11 @@ public class ThighCustomListener extends ThighBaseListener {
 
         resolveArithmeticOperation(ctx);
 
+        if (text_val != null){
+            System.out.println(true);
+        }else{
+            System.out.println(num_val);
+        }
     }
 
     private void resolveArithmeticOperation(ThighParser.Arithmetic_operationContext ctx){
