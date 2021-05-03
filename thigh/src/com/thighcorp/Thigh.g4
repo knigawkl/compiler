@@ -1,10 +1,14 @@
 grammar Thigh;
 
 program: statement* EOF;
-statement: expression | function_definition;
-// statement: print_statement | read_statement | assign_statement;
-print_statement: PRINT value;
-read_statement: READ ID;
+statement: expression
+         | function_definition
+         | print_statement
+         | read_statement
+         | assign_statement;
+print_statement: PRINT value SEMICOLON;
+read_statement: READ ID SEMICOLON;
+assign_statement: ID ASSIGN value;
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
 function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmetic_operation SEMICOLON

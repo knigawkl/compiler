@@ -48,6 +48,16 @@ public interface ThighListener extends ParseTreeListener {
 	 */
 	void exitRead_statement(ThighParser.Read_statementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ThighParser#assign_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssign_statement(ThighParser.Assign_statementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThighParser#assign_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssign_statement(ThighParser.Assign_statementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ThighParser#function_definition}.
 	 * @param ctx the parse tree
 	 */

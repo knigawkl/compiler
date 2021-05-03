@@ -64,6 +64,18 @@ public class ThighBaseListener implements ThighListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAssign_statement(ThighParser.Assign_statementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssign_statement(ThighParser.Assign_statementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction_definition(ThighParser.Function_definitionContext ctx) { }
 	/**
 	 * {@inheritDoc}

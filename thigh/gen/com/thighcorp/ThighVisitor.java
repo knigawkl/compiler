@@ -35,6 +35,12 @@ public interface ThighVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRead_statement(ThighParser.Read_statementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ThighParser#assign_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssign_statement(ThighParser.Assign_statementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ThighParser#function_definition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
