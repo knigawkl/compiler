@@ -17,7 +17,7 @@ function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmetic_operation SEMICOLON;
 //          | assignment_operation SEMICOLON;
 arithmetic_operation: value
-                    | value arithmetic_operator arithmetic_operation
+                    | arithmetic_operation arithmetic_operator arithmetic_operation
                     | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
 //assignment_operation: ID ASSIGN arithmetic_operation;
 arithmetic_operator: ADDITION

@@ -120,6 +120,20 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitArithmetic_operation(ThighParser.Arithmetic_operationContext ctx) {
+        ThighParser.ValueContext a = ctx.value();
+
+        if (a != null){
+            if (a.INT() != null){
+                int x = Integer.parseInt(a.INT().getText());
+
+            }else if (a.STRING() != null){
+
+            }else if (a.REAL() != null){
+
+            }
+        }else if (b != null){
+
+        }
 
     }
 
