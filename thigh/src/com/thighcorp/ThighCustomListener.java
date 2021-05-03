@@ -62,24 +62,24 @@ public class ThighCustomListener extends ThighBaseListener {
     @Override
     public void exitAssign_statement(ThighParser.Assign_statementContext ctx) {
 
-        ThighParser.ValueContext a = ctx.value();
-        ThighParser.Arithmetic_operationContext b = ctx.arithmetic_operation();
+        ThighParser.ValueContext a = ctx.assign_value().value();
+        ThighParser.Arithmetic_operationContext b = ctx.assign_value().arithmetic_operation();
 
         if (a != null){
             if (a.INT() != null){
                 this.variableMap.put(ctx.ID().getText(),
-                        ctx.value().INT().getText());
+                        a.INT().getText());
             }else if (a.STRING() != null){
                 this.variableMap.put(ctx.ID().getText(),
-                        ctx.value().STRING().getText());
+                        a.STRING().getText());
 
             }else if (a.REAL() != null){
                 this.variableMap.put(ctx.ID().getText(),
-                        ctx.value().REAL().getText());
+                        a.REAL().getText());
             }
         }else if (b != null){
             this.variableMap.put(ctx.ID().getText(),
-                    ctx.arithmetic_operation().getText());
+                    b.getText());
         }
 
 
