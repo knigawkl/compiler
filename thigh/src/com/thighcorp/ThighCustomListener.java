@@ -1,13 +1,15 @@
 package com.thighcorp;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, String> variableMap = new HashMap();
+    HashSet<String> variables = new HashSet<String>();
 
     @Override
     public void exitProgram(ThighParser.ProgramContext ctx) {
-
+        System.out.println(LLVMGenerator.generate());
     }
 
     @Override
@@ -17,12 +19,14 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitPrint_statement(ThighParser.Print_statementContext ctx) {
+        String val = "";
         if(ctx.value().INT() != null){
-            System.out.println(ctx.value().INT().getText());
+            val = ctx.value().INT().getText();
         }
         else if(ctx.value().ID() != null){
-            System.out.println(this.variableMap.get(ctx.value().ID().getText()));
+            val = this.variableMap.get(ctx.value().ID().getText());
         }
+        LLVMGenerator.print(val);
     }
 
     @Override
@@ -80,6 +84,8 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitValue(ThighParser.ValueContext ctx) {
-
+//        String tmp = ctx.STRING().getText();
+//        tmp = tmp.substring(1, tmp.length()-1);
+//        memory.put(ctx.ID().getText(), tmp);
     }
 }
