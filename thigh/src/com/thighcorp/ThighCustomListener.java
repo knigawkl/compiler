@@ -81,10 +81,6 @@ public class ThighCustomListener extends ThighBaseListener {
             this.variableMap.put(ctx.ID().getText(),
                     b.getText());
         }
-
-
-
-
     }
 
     @Override
