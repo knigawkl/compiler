@@ -1,16 +1,13 @@
 package com.thighcorp;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-	    System.out.println("Welcome to Thigh programming");
-        String code = "a = \"kakakakakaka\"; print a;";
-        ThighLexer lexer = new ThighLexer(CharStreams.fromString(code));
-        ThighParser parser = new ThighParser(new CommonTokenStream(lexer));
-        parser.addParseListener(new ThighCustomListener());
-        parser.program();
+    public static void main(String[] args) throws IOException {
+        System.out.println("Welcome to Thigh programming");
+        Thigh t = new Thigh();
+        t.run();
     }
 }
