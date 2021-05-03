@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.HashMap;
 
 public class ThighCustomListener extends ThighBaseListener {
-    HashMap<String, Integer> variableMap = new HashMap();
+    HashMap<String, String> variableMap = new HashMap();
 
     @Override
     public void enterProgram(ThighParser.ProgramContext ctx) {
@@ -61,8 +61,30 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitAssign_statement(ThighParser.Assign_statementContext ctx) {
-        this.variableMap.put(ctx.value().ID().getText(),
-                Integer.parseInt(ctx.value().INT().getText()));
+
+        ThighParser.ValueContext a = ctx.value();
+        ThighParser.Arithmetic_operationContext b = ctx.arithmetic_operation();
+
+        if (a != null){
+            if (a.INT() != null){
+                this.variableMap.put(ctx.ID().getText(),
+                        ctx.value().INT().getText());
+            }else if (a.STRING() != null){
+                this.variableMap.put(ctx.ID().getText(),
+                        ctx.value().STRING().getText());
+
+            }else if (a.REAL() != null){
+                this.variableMap.put(ctx.ID().getText(),
+                        ctx.value().REAL().getText());
+            }
+        }else if (b != null){
+            this.variableMap.put(ctx.ID().getText(),
+                    ctx.arithmetic_operation().getText());
+        }
+
+
+
+
     }
 
     @Override
@@ -105,15 +127,6 @@ public class ThighCustomListener extends ThighBaseListener {
 
     }
 
-    @Override
-    public void enterAssignment_operation(ThighParser.Assignment_operationContext ctx) {
-
-    }
-
-    @Override
-    public void exitAssignment_operation(ThighParser.Assignment_operationContext ctx) {
-
-    }
 
     @Override
     public void enterArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {

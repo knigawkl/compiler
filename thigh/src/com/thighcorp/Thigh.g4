@@ -8,15 +8,18 @@ statement: expression
          | assign_statement;
 print_statement: PRINT value SEMICOLON;
 read_statement: READ ID SEMICOLON;
-assign_statement: ID ASSIGN value;
+
+assign_statement: ID ASSIGN assign_value SEMICOLON;
+assign_value: (value | arithmetic_operation);
+
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
 function_body: BRACE_OPEN expression* BRACE_CLOSE;
-expression: arithmetic_operation SEMICOLON
-          | assignment_operation SEMICOLON;
+expression: arithmetic_operation SEMICOLON;
+//          | assignment_operation SEMICOLON;
 arithmetic_operation: value
                     | value arithmetic_operator arithmetic_operation
                     | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
-assignment_operation: ID ASSIGN arithmetic_operation;
+//assignment_operation: ID ASSIGN arithmetic_operation;
 arithmetic_operator: ADDITION
                    | SUBSTITUTION
                    | MULTIPLICATION
@@ -31,7 +34,7 @@ ASSIGN: '=';
 FUNCTION_DEFINITION: 'def';
 
 ID: ('a'..'z'|'A'..'Z')+;
-STRING: '"' ( ~('\\'|'"') )* '"';
+STRING: '"'( ~('\\'|'"') )*'"';
 INT: '-'?'0'..'9'+;
 REAL: '-'?'0'..'9'+('.''0'..'9'+)?;
 
