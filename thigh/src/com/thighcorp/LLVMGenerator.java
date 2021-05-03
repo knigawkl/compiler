@@ -1,7 +1,5 @@
 package com.thighcorp;
 
-import java.util.HashMap;
-
 class LLVMGenerator {
 
     static String header_text = "";
@@ -9,8 +7,6 @@ class LLVMGenerator {
     static int str_i = 0;
     static int ch_i = 0;
     static int fun_i = 1;
-    HashMap<Integer, Double> memory = new HashMap<Integer, Double>();
-
 
     static String generate() {
         String text;
