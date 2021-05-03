@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, String> variableMap = new HashMap();
+    Double num_val = null;
+    String text_val = "";
 
     @Override
     public void enterProgram(ThighParser.ProgramContext ctx) {
@@ -120,21 +122,86 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitArithmetic_operation(ThighParser.Arithmetic_operationContext ctx) {
-        ThighParser.ValueContext a = ctx.value();
 
-        if (a != null){
-            if (a.INT() != null){
-                int x = Integer.parseInt(a.INT().getText());
+        resolveArithmeticOperation(ctx);
 
-            }else if (a.STRING() != null){
+    }
 
-            }else if (a.REAL() != null){
+    private void resolveArithmeticOperation(ThighParser.Arithmetic_operationContext ctx){
+        ThighParser.ValueContext v = ctx.value();
+        ThighParser.Arithmetic_operationContext actx = ctx.arithmetic_operation(0);
+        ThighParser.Arithmetic_operationContext actx_bis = ctx.arithmetic_operation(1);
+        boolean txt = false;
+        boolean num = false;
 
+        if (v != null){
+            // JUST VALUE
+            if (v.STRING() != null) {
+                text_val = v.STRING().getText();
+            }else if (v.INT() != null){
+                num_val = Double.parseDouble(v.INT().getText());
+            }else if (v.REAL() != null){
+                num_val = Double.parseDouble(v.INT().getText());
             }
-        }else if (b != null){
+        }else if (actx != null && actx_bis != null){
+            //DOUBLE EXPRESSION
+            String tmp_txt = "";
+            Double tmp_num = 0.0;
+            resolveArithmeticOperation(actx);
+            if (text_val != null){
+                tmp_txt = text_val;
+                txt = true;
+            }else{
+                tmp_num = num_val;
+                num = true;
+            }
+            resolveArithmeticOperation(actx_bis);
 
+            ThighParser.Arithmetic_operatorContext op = ctx.arithmetic_operator();
+
+            if (op.ADDITION() != null){
+                if (num){
+                    num_val += tmp_num;
+                }else{
+                    //CONCATE TEXT TODO
+                }
+            }else if (op.SUBSTITUTION() != null){
+                if (num){
+                    num_val = tmp_num - num_val;
+                }else{
+                    //NIE MOZNA TODO
+                }
+            }else if (op.DIVISION() != null){
+                if (num){
+                    num_val = tmp_num / num_val;
+                }else{
+                    //NIE MOZNA TODO
+                }
+
+            }else if (op.MULTIPLICATION() != null){
+                if (num){
+                    num_val = tmp_num * num_val;
+                }else{
+                    //NIE MOZNA TODO
+                }
+            }else if (op.MODULO() != null){
+                if (num){
+                    num_val = tmp_num % num_val;
+                }else{
+                    //NIE MOZNA TODO
+                }
+            }else if (op.POWER() != null){
+                if (num){
+                    //POTEGOWANIE TODO
+                }else{
+                    //NIE MOZNA TODO
+                }
+            }
+
+        }else if (actx != null){
+            //SINGLE EXPRESSION
+            resolveArithmeticOperation(actx);
         }
-
     }
 
 
