@@ -4,9 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-class ProxyPrintStream extends PrintStream{
+class ProxyPrintStream extends PrintStream {
     private PrintStream fileStream = null;
-    private PrintStream originalPrintStream = null;
+    private final PrintStream originalPrintStream;
+
     public ProxyPrintStream(PrintStream out, String FilePath) {
         super(out);
         originalPrintStream = out;
@@ -17,10 +18,12 @@ class ProxyPrintStream extends PrintStream{
             e.printStackTrace();
         }
     }
+
     public void print(final String str) {
         originalPrintStream.print(str);
         fileStream.print(str);
     }
+
     public void println(final String str) {
         originalPrintStream.println(str);
         fileStream.println(str);
