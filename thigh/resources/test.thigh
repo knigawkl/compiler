@@ -1,6 +1,1 @@
-print 10;
-print 10.10;
-print "matlab";
-
-a = 3 + 4;
-print a;
+input a;

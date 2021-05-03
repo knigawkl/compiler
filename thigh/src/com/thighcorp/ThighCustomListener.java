@@ -27,23 +27,29 @@ public class ThighCustomListener extends ThighBaseListener {
     @Override
     public void exitPrint_statement(ThighParser.Print_statementContext ctx) {
         String val = "";
-        if(ctx.value().INT() != null){
+        if(variables.contains(ctx.value().ID().getText())) {
+            LLVMGenerator.print_variable(ctx.value().ID().getText());
+            return;
+        }
+
+        if(ctx.value().INT() != null)
             val = ctx.value().INT().getText();
-        }
-        else if(ctx.value().ID() != null){
-            val = this.variableMap.get(ctx.value().ID().getText());
-        }
+        else if(ctx.value().REAL() != null)
+            val = ctx.value().REAL().getText();
+        else if(ctx.value().STRING() != null)
+            val = ctx.value().STRING().getText();
         LLVMGenerator.print(val);
     }
 
     @Override
     public void exitRead_statement(ThighParser.Read_statementContext ctx) {
         String ID = ctx.ID().getText();
-        if( ! variables.contains(ID) ) {
-            variables.add(ID);
-            LLVMGenerator.declare(ID);
-        }
-        LLVMGenerator.scanf(ID);
+        LLVMGenerator.read(ID);
+//        if(!variables.contains(ID)) {
+//            variables.add(ID);
+//            LLVMGenerator.declare(ID);
+//        }
+//        LLVMGenerator.scanf(ID);
     }
 
     @Override
@@ -94,11 +100,11 @@ public class ThighCustomListener extends ThighBaseListener {
 
         resolveArithmeticOperation(ctx);
 
-        if (text_val != null){
-            System.out.println(true);
-        }else{
-            System.out.println(num_val);
-        }
+//        if (text_val != null){
+//            System.out.println(true);
+//        }else{
+//            System.out.println(num_val);
+//        }
     }
 
     private void resolveArithmeticOperation(ThighParser.Arithmetic_operationContext ctx){
