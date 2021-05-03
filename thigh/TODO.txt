@@ -1,0 +1,5 @@
+- nie działa `print 10.10`
+- nie działa `print "matlab"`
+- obejrzeć wykład z 22.03 (o projekcie)
+- rzutowanie typów int i real!!
+-
