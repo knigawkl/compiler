@@ -22,14 +22,11 @@ public class Thigh {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ThighParser parser = new ThighParser(tokens);
         ParseTree tree = parser.program();
-        System.out.println("\nANTLR output:");
-        System.out.println(tree.toStringTree(parser));
         return tree;
     }
 
      void parse(String out_filepath, ParseTree tree) {
         /* Parsing to IR LLVM **/
-        System.out.println("\nLLVM INPUT:");
         System.setOut(new ProxyPrintStream(System.out, out_filepath));
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new ThighCustomListener(), tree);

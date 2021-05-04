@@ -10,7 +10,7 @@ statement: expression
 print_statement: PRINT value SEMICOLON;
 read_statement: READ ID SEMICOLON;
 assign_statement: ID ASSIGN assign_value SEMICOLON;
-assign_value: (value | arithmetic_operation);
+assign_value: value | arithmetic_operation;
 
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
 function_body: BRACE_OPEN expression* BRACE_CLOSE;

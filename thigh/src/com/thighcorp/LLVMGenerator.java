@@ -47,11 +47,19 @@ class LLVMGenerator {
         fun_i++;
     }
 
-    static void print_variable(String id) {
+    static void print_int_variable(String id) {
         main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
         reg++;
         main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strp, i32 0, i32 0), i32 %"+(reg-1)+")\n";
         reg++;
+    }
+
+    static void print_string(String text){
+        int str_len = text.length();
+        String str_type = "["+(str_len+2)+" x i8]";
+        header_text += "@str"+str_i+" = constant"+str_type+" c\""+text+"\\0A\\00\"\n";
+        main_text += "call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( "+str_type+", "+str_type+"* @str"+str_i+", i32 0, i32 0))\n";
+        str_i++;
     }
 
     static void input(String id) {
