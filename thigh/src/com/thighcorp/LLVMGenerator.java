@@ -10,10 +10,11 @@ class LLVMGenerator {
     static int reg = 1;
 
     static String generate() {
-        String text;
-        text = "declare i32 @printf(i8*, ...)\n";
-        text += "declare i32 @getchar()\n";
-        text += "@.str = global [17 x i8] c\"You entered: %c\\0A\\00\"\n";
+        String text = "";
+        text += "declare i32 @printf(i8*, ...)\n";
+        text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
+        text += "@strp = constant [4 x i8] c\"%d\\0A\\00\"\n";
+        text += "@strs = constant [3 x i8] c\"%d\\00\"\n";
         text += header_text;
         text += "define i32 @main() nounwind{\n";
         text += main_text;

@@ -44,7 +44,6 @@ public class ThighCustomListener extends ThighBaseListener {
     @Override
     public void exitRead_statement(ThighParser.Read_statementContext ctx) {
         String ID = ctx.ID().getText();
-//        LLVMGenerator.read(ID);
         if(!variables.contains(ID)) {
             variables.add(ID);
             LLVMGenerator.declare(ID);
