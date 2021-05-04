@@ -6,10 +6,10 @@ TODO:
 -
 
 Testy do wykonania przy wprowadzaniu zmian:
--
--
--
--
--
-
+- wyrażenie arytmetyczne z nawiasem na początku/końcu/w środku
+- castowanie INT <-> REAL
+- wypisywanie INT/REAL/STRING
+- wczytywanie INT/REAL/STRING
+- operacje arytmetyczne ADD/SUB/MUL/DIV
+- 
 
