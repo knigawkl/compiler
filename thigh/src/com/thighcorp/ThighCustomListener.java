@@ -26,19 +26,18 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitPrint_statement(ThighParser.Print_statementContext ctx) {
-        String val = "";
-        if(variables.contains(ctx.value().ID().getText())) {
-            LLVMGenerator.print_variable(ctx.value().ID().getText());
-            return;
+        String ID = ctx.value().ID().getText();
+        if( variables.contains(ID) ) {
+            LLVMGenerator.print_variable(ID);
+        } else if (ctx.value().INT() != null) {
+            LLVMGenerator.print(ctx.value().INT().getText());
+        } else if(ctx.value().REAL() != null) {
+            LLVMGenerator.print(ctx.value().REAL().getText());
+        } else if(ctx.value().STRING() != null) {
+            LLVMGenerator.print(ctx.value().STRING().getText());
+        } else {
+            // TODO: Please handle this with some descriptive error message
         }
-
-        if(ctx.value().INT() != null)
-            val = ctx.value().INT().getText();
-        else if(ctx.value().REAL() != null)
-            val = ctx.value().REAL().getText();
-        else if(ctx.value().STRING() != null)
-            val = ctx.value().STRING().getText();
-        LLVMGenerator.print(val);
     }
 
     @Override

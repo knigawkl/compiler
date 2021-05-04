@@ -9,8 +9,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class Thigh {
-    String in_filepath = "resources/test.thigh";
-    String out_filepath = "resources/test.ll";
+    String in_filepath;
+    String out_filepath;
+
+    public Thigh(String thigh_filepath, String ir_filepath) {
+        in_filepath = thigh_filepath;
+        out_filepath = ir_filepath;
+    }
 
     ParseTree getParseTree() throws IOException {
         ThighLexer lexer = new ThighLexer(CharStreams.fromFileName(this.in_filepath));

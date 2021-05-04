@@ -178,4 +178,8 @@ out/
 *.ipr
 *.iws
 
+# Generated Java files
 thigh/gen/
+# Generated intermediate representation files
+*.ll
+
