@@ -62,14 +62,14 @@ class LLVMGenerator {
 
     static void print_int_var(String id) {
         declare_string(VarType.INT);
-        load_int(id);
+        load_variable(id, VarType.INT);
         main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
         reg_iter++;
     }
 
     static void print_double_var(String id) {
         declare_string(VarType.DOUBLE);
-        load_double(id);
+        load_variable(id, VarType.DOUBLE);
         main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
         reg_iter++;
     }
@@ -97,22 +97,21 @@ class LLVMGenerator {
         reg_iter++;
     }
 
-    static void load_int(String id) {
-        main_text += "%"+ reg_iter +" = load i32, i32* %"+id+"\n";
+    static void load_variable(String id, VarType type) {
+        String loadingTemplate = "%%"+ reg_iter +" = load %s, %s* %%"+id+"\n";
+        switch (type) {
+            case INT -> main_text += String.format(loadingTemplate, integerStr, integerStr);
+            case DOUBLE -> main_text += String.format(loadingTemplate, doubleStr, doubleStr);
+        }
         reg_iter++;
     }
 
-    static void load_double(String id) {
-        main_text += "%" + reg_iter + " = load double, double* %" + id + "\n";
-        reg_iter++;
-    }
-
-    static void declare_int(String id){
-        main_text += "%" + id + " = alloca i32\n";
-    }
-
-    static void declare_double(String id){
-        main_text += "%" + id + " = alloca double\n";
+    static void declareVariable(String id, VarType type) {
+        String declarationTemplate = "%%" + id + " = alloca %s\n";
+        switch (type) {
+            case INT -> main_text += String.format(declarationTemplate, integerStr);
+            case DOUBLE -> main_text += String.format(declarationTemplate, doubleStr);
+        }
     }
 
     static void declare_string(VarType type) {

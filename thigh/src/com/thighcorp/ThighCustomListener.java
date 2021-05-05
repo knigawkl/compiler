@@ -74,12 +74,12 @@ public class ThighCustomListener extends ThighBaseListener {
             switch (input_type) {
                 case "int" -> {
                     variables.put(variableName, VarType.INT);
-                    LLVMGenerator.declare_int(variableName);
+                    LLVMGenerator.declareVariable(variableName, VarType.INT);
                     LLVMGenerator.input_int(variableName);
                 }
                 case "double" -> {
                     variables.put(variableName, VarType.DOUBLE);
-                    LLVMGenerator.declare_double(variableName);
+                    LLVMGenerator.declareVariable(variableName, VarType.DOUBLE);
                     LLVMGenerator.input_double(variableName);
                 }
                 case "string" -> {
@@ -97,10 +97,10 @@ public class ThighCustomListener extends ThighBaseListener {
         Value v = stack.pop();
         variables.put(variableName, v.type);
         if (v.type == VarType.INT) {
-            LLVMGenerator.declare_int(variableName);
+            LLVMGenerator.declareVariable(variableName, VarType.INT);
             LLVMGenerator.assign(variableName, v.name, VarType.INT);
         } else if (v.type == VarType.DOUBLE) {
-            LLVMGenerator.declare_double(variableName);
+            LLVMGenerator.declareVariable(variableName, VarType.DOUBLE);
             LLVMGenerator.assign(variableName, v.name, VarType.DOUBLE);
         } else if (v.type == VarType.STRING) {
             String tmp = ctx.assign_value().getText();
