@@ -30,36 +30,6 @@ class LLVMGenerator {
         }
     }
 
-    static void add_int(String val1, String val2){
-        main_text += "%"+ reg_iter +" = add i32 "+val1+", "+val2+"\n";
-        reg_iter++;
-    }
-
-    static void add_double(String val1, String val2){
-        main_text += "%"+ reg_iter +" = fadd double "+val1+", "+val2+"\n";
-        reg_iter++;
-    }
-
-    static void mult_i32(String val1, String val2){
-        main_text += "%"+ reg_iter +" = mul i32 "+val1+", "+val2+"\n";
-        reg_iter++;
-    }
-
-    static void mult_double(String val1, String val2){
-        main_text += "%"+ reg_iter +" = fmul double "+val1+", "+val2+"\n";
-        reg_iter++;
-    }
-
-    static void sitofp(String id){
-        main_text += "%"+ reg_iter +" = sitofp i32 "+id+" to double\n";
-        reg_iter++;
-    }
-
-    static void fptosi(String id){
-        main_text += "%"+ reg_iter +" = fptosi double "+id+" to i32\n";
-        reg_iter++;
-    }
-
     static void print_int_var(String id) {
         declareString(VarType.INT);
         loadVariable(id, VarType.INT);
