@@ -5,8 +5,6 @@ class LLVMGenerator {
     static String header_text = "";
     static String main_text = "";
     static int str_i = 0;
-    static int ch_i = 0;
-    static int fun_i = 1;
     static int reg = 1;
 
     static String generate() {
@@ -24,11 +22,11 @@ class LLVMGenerator {
     }
 
     static void assign_int(String id, String value) {
-        main_text += "store i32 "+value+", i32* %"+id+"\n";
+        main_text += "store i32 " + value + ", i32* %" + id + "\n";
     }
 
     static void assign_double(String id, String value) {
-        main_text += "store double "+value+", double* %"+id+"\n";
+        main_text += "store double " + value + ", double* %" + id + "\n";
     }
 
     static void add_int(String val1, String val2){
@@ -63,13 +61,13 @@ class LLVMGenerator {
 
     static void print_int_var(String id) {
         load_int(id);
-        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %"+(reg-1)+")\n";
+        main_text += "%" + reg + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %" + (reg-1) + ")\n";
         reg++;
     }
 
     static void print_double_var(String id) {
         load_double(id);
-        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double %"+(reg-1)+")\n";
+        main_text += "%" + reg + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double %" + (reg-1) + ")\n";
         reg++;
     }
 
@@ -83,7 +81,7 @@ class LLVMGenerator {
     }
 
     static void input_int(String id) {
-        main_text += "%"+reg+" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32* %"+id+")\n";
+        main_text += "%" + reg + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32* %" + id + ")\n";
         reg++;
     }
 
