@@ -3,7 +3,7 @@ package com.thighcorp;
 import java.util.HashMap;
 import java.util.Stack;
 
-enum VarType{INT, REAL, STRING, UNKNOWN}
+enum VarType{INT, DOUBLE, STRING, UNKNOWN}
 
 class Value {
     public String name;
@@ -42,13 +42,13 @@ public class ThighCustomListener extends ThighBaseListener {
         if (isVariable) {
             switch (type) {
                 case INT -> LLVMGenerator.print_int_var(variableName);
-                case REAL -> LLVMGenerator.print_double_var(variableName);
+                case DOUBLE -> LLVMGenerator.print_double_var(variableName);
                 case STRING -> LLVMGenerator.print_string(strMemory.get(variableName));
             }
         } else if (ctx.value().INT() != null) {
             LLVMGenerator.print_string(ctx.value().INT().getText());
-        } else if (ctx.value().REAL() != null) {
-            LLVMGenerator.print_string(ctx.value().REAL().getText());
+        } else if (ctx.value().DOUBLE() != null) {
+            LLVMGenerator.print_string(ctx.value().DOUBLE().getText());
         } else if (ctx.value().STRING() != null) {
             String str = ctx.value().STRING().getText();
             LLVMGenerator.print_string(str.substring(1, str.length()-1));
@@ -57,17 +57,28 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitRead(ThighParser.ReadContext ctx) {
-//        String ID = ctx.ID().getText();
-//        if(!variablesOLd.contains(ID)) {
-//            variablesOLd.add(ID);
-//            LLVMGenerator.declare_int(ID);
-//        }
-//        LLVMGenerator.input(ID);
-//        if (variableMap.containsKey(ID)) {
-//            variableMap.put(ID, "");
-//            LLVMGenerator.declare(ID);
-//        }
-//        LLVMGenerator.input(ID);
+        String variableName = ctx.ID().getText();
+        var input_type = ctx.type().getText();
+
+        if (!variables.containsKey(variableName)) {
+            switch (input_type) {
+                case "int" -> {
+                    variables.put(variableName, VarType.INT);
+                    LLVMGenerator.declare_int(variableName);
+                    LLVMGenerator.input_int(variableName);
+                }
+                case "double" -> {
+                    variables.put(variableName, VarType.DOUBLE);
+                    LLVMGenerator.declare_double(variableName);
+                    LLVMGenerator.input_double(variableName);
+                }
+                case "string" -> {
+                    variables.put(variableName, VarType.STRING);
+//                    LLVMGenerator.declare_string(variableName);
+//                    LLVMGenerator.input_string(variableName);
+                }
+            }
+        }
     }
 
     @Override
@@ -78,7 +89,7 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v.type == VarType.INT) {
             LLVMGenerator.declare_int(variableName);
             LLVMGenerator.assign_int(variableName, v.name);
-        } else if (v.type == VarType.REAL) {
+        } else if (v.type == VarType.DOUBLE) {
             LLVMGenerator.declare_double(variableName);
             LLVMGenerator.assign_double(variableName, v.name);
         } else if (v.type == VarType.STRING) {
@@ -122,8 +133,8 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitValue(ThighParser.ValueContext ctx) {
         if (ctx.INT() != null) {
             stack.push(new Value(ctx.INT().getText(), VarType.INT));
-        } else if (ctx.REAL() != null) {
-            stack.push(new Value(ctx.REAL().getText(), VarType.REAL));
+        } else if (ctx.DOUBLE() != null) {
+            stack.push(new Value(ctx.DOUBLE().getText(), VarType.DOUBLE));
         } else if (ctx.STRING() != null) {
             String str = ctx.STRING().getText();
             stack.push(new Value(str.substring(1, str.length()-1), VarType.STRING));

@@ -23,38 +23,12 @@ class LLVMGenerator {
         return text;
     }
 
-    static void read(String id) {
-        header_text += "@ch" + ch_i + " = common global i8 0\n";
-        main_text += "%" + fun_i + " = call i32 @getchar()\n";
-        fun_i++;
-        main_text += "%" + fun_i + " = trunc i32 %" + (fun_i-1) + " to i8\n";
-        main_text += "store i8 %" + fun_i + ", i8* @ch" + ch_i + "\n";
-        fun_i++;
-        main_text += "%" + fun_i + " = load i8, i8* @ch" + ch_i + "\n";
-        fun_i++;
-        main_text += "%" + fun_i + " = sext i8 %" + (fun_i-1) + " to i32\n";
-        fun_i++;
-        main_text += "%" + fun_i + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str, i32 0, i32 0), i32 %" + (fun_i-1) +")\n";
-        fun_i++;
-        ch_i++;
-    }
-
     static void assign_int(String id, String value) {
         main_text += "store i32 "+value+", i32* %"+id+"\n";
     }
 
     static void assign_double(String id, String value) {
         main_text += "store double "+value+", double* %"+id+"\n";
-    }
-
-    static void load_i32(String id) {
-        main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
-        reg++;
-    }
-
-    static void load_double(String id) {
-        main_text += "%"+reg+" = load double, double* %"+id+"\n";
-        reg++;
     }
 
     static void add_int(String val1, String val2){
@@ -88,15 +62,13 @@ class LLVMGenerator {
     }
 
     static void print_int_var(String id) {
-        main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
-        reg++;
+        load_int(id);
         main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %"+(reg-1)+")\n";
         reg++;
     }
 
     static void print_double_var(String id) {
-        main_text += "%"+reg+" = load double, double* %"+id+"\n";
-        reg++;
+        load_double(id);
         main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double %"+(reg-1)+")\n";
         reg++;
     }
@@ -110,8 +82,23 @@ class LLVMGenerator {
         reg++;
     }
 
-    static void input(String id) {
-        main_text += "%"+reg+" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32* %"+id+")\n";
+    static void input_int(String id) {
+        main_text += "%"+reg+" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32* %"+id+")\n";
+        reg++;
+    }
+
+    static void input_double(String id) {
+        main_text += "%"+reg+" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double* %"+id+")\n";
+        reg++;
+    }
+
+    static void load_int(String id) {
+        main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
+        reg++;
+    }
+
+    static void load_double(String id) {
+        main_text += "%"+reg+" = load double, double* %"+id+"\n";
         reg++;
     }
 

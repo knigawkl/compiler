@@ -1,15 +1,13 @@
 TODO:
-- nie działa `print 10.10`
-- nie działa `print "matlab"`
 - obejrzeć wykład z 22.03 (o projekcie)
-- rzutowanie typów int i real!!
+- rzutowanie typów int i DOUBLE
 -
 
 Testy do wykonania przy wprowadzaniu zmian:
 - wyrażenie arytmetyczne z nawiasem na początku/końcu/w środku
-- castowanie INT <-> REAL
-- wypisywanie INT/REAL/STRING
-- wczytywanie INT/REAL/STRING
+- castowanie INT <-> DOUBLE
+- wypisywanie INT/DOUBLE/STRING
+- wczytywanie INT/DOUBLE/STRING
 - operacje arytmetyczne ADD/SUB/MUL/DIV
 - 
 

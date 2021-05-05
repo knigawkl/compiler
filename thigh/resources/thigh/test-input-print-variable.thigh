@@ -1,2 +1,8 @@
-input a;
-print a;
+print "Performing i/o test (Boomerang). ";
+print "Please input an integer: ";
+input int i;
+print i;
+print "Please input a double: ";
+input double d;
+print d;
+

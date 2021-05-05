@@ -9,7 +9,7 @@ statement: expression
          | comment;
 
 print_statement: PRINT value SEMICOLON #print;
-read_statement: READ ID SEMICOLON #read;
+read_statement: READ type ID SEMICOLON #read;
 assign_statement: ID ASSIGN assign_value SEMICOLON #assign;
 assign_value: (value | arithmetic_operation) #assignVal;
 comment: COMMENT STRING SEMICOLON;
@@ -28,7 +28,8 @@ arithmetic_operator: ADDITION
                    | DIVISION
                    | MODULO
                    | POWER;
-value: ID | STRING | INT | REAL;
+value: ID | STRING | INT | DOUBLE;
+type: 'int' | 'double' | 'string';
 
 PRINT: 'print';
 READ: 'input';
@@ -38,7 +39,7 @@ FUNCTION_DEFINITION: 'def';
 ID: ('a'..'z'|'A'..'Z')+;
 STRING: '"'( ~('\\'|'"') )*'"';
 INT: '-'?'0'..'9'+;
-REAL: '-'?'0'..'9'+('.''0'..'9'+)?;
+DOUBLE: '-'?'0'..'9'+('.''0'..'9'+)?;
 
 ADDITION: '+';
 SUBSTITUTION: '-';
