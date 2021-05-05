@@ -1,14 +1,22 @@
 package com.thighcorp;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Stack;
 
+enum VarType{INT, REAL, STRING, UNKNOWN}
+
+class Value {
+    public String name;
+    public VarType type;
+    public Value(String name, VarType type){
+        this.name = name;
+        this.type = type;
+    }
+}
+
 public class ThighCustomListener extends ThighBaseListener {
-    HashMap<String, String> variableMap = new HashMap<>();
-    HashSet<String> variables = new HashSet<>();
-    Stack<String> stack = new Stack<>();
-    String value;
+    HashMap<String, VarType> variables = new HashMap<>();
+    Stack<Value> stack = new Stack<>();
 
     @Override
     public void enterProgram(ThighParser.ProgramContext ctx) {
@@ -26,41 +34,33 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitPrint_statement(ThighParser.Print_statementContext ctx) {
-        String ID;
-        try {
-            // accessing ctx.value().ID() is dangerous
-            // if value is not a variable, NullPointer is what we would face
-            ID = ctx.value().ID().getText();
-        } catch (Exception e) {
-            ID = "";
-        }
-        boolean isVariable = !ID.equals("");
+    public void exitPrint(ThighParser.PrintContext ctx) {
+        var variableName = getVariableName(ctx);
+        VarType type = variables.get(variableName);
+        boolean isVariable = (type != null);
         if (isVariable) {
-            if (this.variableMap.containsKey(ID)) {
-                LLVMGenerator.print_string(this.variableMap.get(ID));
-            } else {
-                ctx.getStart().getLine();
-                System.err.println("Line "+ ctx.getStart().getLine()+", unknown variable: "+ID);
+            switch (type) {
+                case INT -> LLVMGenerator.print_int_var(variableName);
+                case REAL -> LLVMGenerator.print_double_var(variableName);
+                case STRING -> LLVMGenerator.print_string_var(variableName);
             }
-        } else {
-            if (ctx.value().INT() != null) {
-                LLVMGenerator.print_string(ctx.value().INT().getText());
-            } else if (ctx.value().REAL() != null) {
-                LLVMGenerator.print_string(ctx.value().REAL().getText());
-            } else if (ctx.value().STRING() != null) {
-                LLVMGenerator.print_string(value);
-            }
+        } else if (ctx.value().INT() != null) {
+            LLVMGenerator.print_string(ctx.value().INT().getText());
+        } else if (ctx.value().REAL() != null) {
+            LLVMGenerator.print_string(ctx.value().REAL().getText());
+        } else if (ctx.value().STRING() != null) {
+            LLVMGenerator.print_string(ctx.value().STRING().getText());
         }
     }
 
     @Override
-    public void exitRead_statement(ThighParser.Read_statementContext ctx) {
-        String ID = ctx.ID().getText();
-        if(!variables.contains(ID)) {
-            variables.add(ID);
-            LLVMGenerator.declare(ID);
-        }
+    public void exitRead(ThighParser.ReadContext ctx) {
+//        String ID = ctx.ID().getText();
+//        if(!variablesOLd.contains(ID)) {
+//            variablesOLd.add(ID);
+//            LLVMGenerator.declare_int(ID);
+//        }
+//        LLVMGenerator.input(ID);
 //        if (variableMap.containsKey(ID)) {
 //            variableMap.put(ID, "");
 //            LLVMGenerator.declare(ID);
@@ -69,34 +69,46 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitAssign_statement(ThighParser.Assign_statementContext ctx) {
+    public void exitAssign(ThighParser.AssignContext ctx) {
         var variableName = ctx.ID().getText();
-        var assignedValue = ctx.assign_value().value();
-        var assignedArithmeticOperation = ctx.assign_value().arithmetic_operation();
-
-        if (assignedValue != null) {
-            if (assignedValue.STRING() != null) {
-                var tmp = assignedValue.STRING().getText();
-                tmp = tmp.substring(1, tmp.length()-1);
-                this.variableMap.put(variableName, tmp);
-            } else if (assignedValue.INT() != null) {
-                this.variableMap.put(variableName, assignedValue.INT().getText());
-            } else if (assignedValue.REAL() != null) {
-                this.variableMap.put(variableName, assignedValue.REAL().getText());
-            }
-        } else if (assignedArithmeticOperation != null) {
-            this.variableMap.put(variableName, assignedArithmeticOperation.getText());
+        Value v = stack.pop();
+        variables.put(variableName, v.type);
+        if (v.type == VarType.INT) {
+            LLVMGenerator.declare_int(variableName);
+            LLVMGenerator.assign_int(variableName, v.name);
+        } else if (v.type == VarType.REAL) {
+            LLVMGenerator.declare_double(variableName);
+            LLVMGenerator.assign_double(variableName, v.name);
+        } else if (v.type == VarType.STRING) {
+            LLVMGenerator.declare_string(variableName);
+            LLVMGenerator.assign_string(variableName, v.name);
         }
+//        var assignedValue = ctx.assign_value().value();
+//        var assignedArithmeticOperation = ctx.assign_value().arithmetic_operation();
+//
+//        if (assignedValue != null) {
+//            if (assignedValue.STRING() != null) {
+//                var tmp = assignedValue.STRING().getText();
+//                tmp = tmp.substring(1, tmp.length()-1);
+//                this.variableMapOld.put(variableName, tmp);
+//            } else if (assignedValue.INT() != null) {
+//                this.variableMapOld.put(variableName, assignedValue.INT().getText());
+//            } else if (assignedValue.REAL() != null) {
+//                this.variableMapOld.put(variableName, assignedValue.REAL().getText());
+//            }
+//        } else if (assignedArithmeticOperation != null) {
+//            this.variableMapOld.put(variableName, assignedArithmeticOperation.getText());
+//        }
     }
 
     @Override
     public void exitFunction_definition(ThighParser.Function_definitionContext ctx) {
-
+        // TODO: 2nd project
     }
 
     @Override
     public void exitFunction_body(ThighParser.Function_bodyContext ctx) {
-
+        // TODO: 2nd project
     }
 
     @Override
@@ -121,18 +133,28 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitValue(ThighParser.ValueContext ctx) {
-        if (ctx.ID() != null) {
-            value = variableMap.get(ctx.ID().getText());
+        if (ctx.INT() != null) {
+            stack.push(new Value(ctx.INT().getText(), VarType.INT));
+        } else if (ctx.REAL() != null) {
+            stack.push(new Value(ctx.REAL().getText(), VarType.REAL));
+        } else if (ctx.STRING() != null) {
+            String str = ctx.STRING().getText();
+            stack.push(new Value(str.substring(1, str.length()-1), VarType.STRING));
+        } else if (ctx.ID() != null) {
+            // value = variableMapOld.get(ctx.ID().getText());
+            // then we retrieve value of this variable from variable map
         }
-        else if (ctx.STRING() != null) {
-            String tmp = ctx.STRING().getText();
-            value = tmp.substring(1, tmp.length()-1);
+    }
+
+    public String getVariableName(ThighParser.PrintContext ctx) {
+        String ID;
+        try {
+            // accessing ctx.value().ID() is dangerous
+            // if value is not a variable, NullPointer is what we would face
+            ID = ctx.value().ID().getText();
+        } catch (Exception e) {
+            ID = "";
         }
-        else if (ctx.INT() != null) {
-            stack.push(ctx.INT().getText());
-        }
-        else if (ctx.REAL() != null) {
-            stack.push(ctx.REAL().getText()); // TODO: verify this line
-        }
+        return ID;
     }
 }

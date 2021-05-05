@@ -5,12 +5,14 @@ statement: expression
          | function_definition
          | print_statement
          | read_statement
-         | assign_statement;
+         | assign_statement
+         | comment;
 
-print_statement: PRINT value SEMICOLON;
-read_statement: READ ID SEMICOLON;
-assign_statement: ID ASSIGN assign_value SEMICOLON;
-assign_value: value | arithmetic_operation;
+print_statement: PRINT value SEMICOLON #print;
+read_statement: READ ID SEMICOLON #read;
+assign_statement: ID ASSIGN assign_value SEMICOLON #assign;
+assign_value: (value | arithmetic_operation) #assignVal;
+comment: COMMENT STRING SEMICOLON;
 
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
 function_body: BRACE_OPEN expression* BRACE_CLOSE;
@@ -52,3 +54,4 @@ BRACKET_CLOSE: ')';
 BRACE_OPEN: '{';
 BRACE_CLOSE: '}';
 WHITESPACE: [ \t\r\n]+ -> skip;
+COMMENT: '#';

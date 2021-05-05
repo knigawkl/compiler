@@ -1,1 +1,2 @@
 input a;
+print a;

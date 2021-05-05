@@ -1,3 +1,5 @@
-print "matlab";
+# "printing int value";
 print 10;
-print 10.10;
+# "printing double value";
+print 10.11;
+# "TODO: printing string value";
