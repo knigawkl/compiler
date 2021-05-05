@@ -61,23 +61,13 @@ class LLVMGenerator {
     }
 
     static void print_int_var(String id) {
+        header_text += "@str" + string_declaration_iter + " = constant [4 x i8] c\"%d\\0A\\00\"\n";
         load_int(id);
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
+        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + string_declaration_iter + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
+        string_declaration_iter++;
         reg_iter++;
     }
-    /*
-    elif var_type == "double":
-        var_size = "[4 x i8]"
-        string_declaration = f"@str.{self.str_decl_iter} = constant {var_size} c\"%f\\0A\\00\"\n"
-    self.str_decl_iter += 1
-    self.header_text += string_declaration
 
-    self.buffer += f"%{self.reg_iter} = load {var_type}, {var_type}* %{var_id}\n"
-    self.reg_iter += 1
-    self.buffer += f"%{self.reg_iter} = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ({var_size}, {var_size}* @str.{self.str_decl_iter-1}, i32 0, i32 0), {var_type} %{self.reg_iter-1})\n"
-    self.reg_iter += 1
-
-     */
     static void print_double_var(String id) {
         header_text += "@str" + string_declaration_iter + " = constant [4 x i8] c\"%f\\0A\\00\"\n";
         load_double(id);
@@ -96,12 +86,16 @@ class LLVMGenerator {
     }
 
     static void input_int(String id) {
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32* %" + id + ")\n";
+        header_text += "@str" + string_declaration_iter + " = constant [3 x i8] c\"%d\\00\"\n";
+        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @str" + string_declaration_iter + ", i32 0, i32 0), i32* %" + id + ")\n";
+        string_declaration_iter++;
         reg_iter++;
     }
 
     static void input_double(String id) {
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @strpd, i32 0, i32 0), double* %" + id + ")\n";
+        header_text += "@str" + string_declaration_iter + " = constant [4 x i8] c\"%lf\\00\"\n";
+        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + string_declaration_iter + ", i32 0, i32 0), double* %" + id + ")\n";
+        string_declaration_iter++;
         reg_iter++;
     }
 

@@ -5,6 +5,6 @@ input int i;
 print i;
 
 print "Please input a double: ";
-input int d;
+input double d;
 print d;
 
