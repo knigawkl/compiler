@@ -53,15 +53,15 @@ public class ThighCustomListener extends ThighBaseListener {
             switch (type) {
                 case INT -> LLVMGenerator.print_int_var(variableName);
                 case DOUBLE -> LLVMGenerator.print_double_var(variableName);
-                case STRING -> LLVMGenerator.print_string(strMemory.get(variableName));
+                case STRING -> LLVMGenerator.printString(strMemory.get(variableName));
             }
         } else if (ctx.value().INT() != null) {
-            LLVMGenerator.print_string(ctx.value().INT().getText());
+            LLVMGenerator.printString(ctx.value().INT().getText());
         } else if (ctx.value().DOUBLE() != null) {
-            LLVMGenerator.print_string(ctx.value().DOUBLE().getText());
+            LLVMGenerator.printString(ctx.value().DOUBLE().getText());
         } else if (ctx.value().STRING() != null) {
             String str = ctx.value().STRING().getText();
-            LLVMGenerator.print_string(str.substring(1, str.length()-1));
+            LLVMGenerator.printString(str.substring(1, str.length()-1));
         }
     }
 
@@ -75,12 +75,12 @@ public class ThighCustomListener extends ThighBaseListener {
                 case "int" -> {
                     variables.put(variableName, VarType.INT);
                     LLVMGenerator.declareVariable(variableName, VarType.INT);
-                    LLVMGenerator.input_int(variableName);
+                    LLVMGenerator.inputVariable(variableName, VarType.INT);
                 }
                 case "double" -> {
                     variables.put(variableName, VarType.DOUBLE);
                     LLVMGenerator.declareVariable(variableName, VarType.DOUBLE);
-                    LLVMGenerator.input_double(variableName);
+                    LLVMGenerator.inputVariable(variableName, VarType.DOUBLE);
                 }
                 case "string" -> {
                     variables.put(variableName, VarType.STRING);
