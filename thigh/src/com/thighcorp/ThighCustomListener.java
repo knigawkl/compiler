@@ -98,10 +98,10 @@ public class ThighCustomListener extends ThighBaseListener {
         variables.put(variableName, v.type);
         if (v.type == VarType.INT) {
             LLVMGenerator.declare_int(variableName);
-            LLVMGenerator.assign_int(variableName, v.name);
+            LLVMGenerator.assign(variableName, v.name, VarType.INT);
         } else if (v.type == VarType.DOUBLE) {
             LLVMGenerator.declare_double(variableName);
-            LLVMGenerator.assign_double(variableName, v.name);
+            LLVMGenerator.assign(variableName, v.name, VarType.DOUBLE);
         } else if (v.type == VarType.STRING) {
             String tmp = ctx.assign_value().getText();
             tmp = tmp.substring(1, tmp.length()-1);

@@ -2,17 +2,17 @@ package com.thighcorp;
 
 class LLVMGenerator {
 
-    static String header_text = "";
-    static String main_text = "";
-    static int string_declaration_iter = 0;
-    static int reg_iter = 1;
+    private static String header_text = "";
+    private static String main_text = "";
+    private static int string_declaration_iter = 0;
+    private static int reg_iter = 1;
+    private static final String integerStr = "i32";
+    private static final String doubleStr = "double";
 
     static String generate() {
         String text = "";
         text += "declare i32 @printf(i8*, ...)\n";
         text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
-        text += "@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n";
-        text += "@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n";
         text += "@strs = constant [3 x i8] c\"%d\\00\"\n";
         text += header_text;
         text += "define i32 @main() nounwind{\n";
@@ -22,12 +22,12 @@ class LLVMGenerator {
         return text;
     }
 
-    static void assign_int(String id, String value) {
-        main_text += "store i32 " + value + ", i32* %" + id + "\n";
-    }
-
-    static void assign_double(String id, String value) {
-        main_text += "store double " + value + ", double* %" + id + "\n";
+    static void assign(String id, String value, VarType type) {
+        String assignmentTemplate = "store %s " + value + ", %s* %%" + id + "\n";
+        switch (type) {
+            case INT -> main_text += String.format(assignmentTemplate, integerStr, integerStr);
+            case DOUBLE -> main_text += String.format(assignmentTemplate, doubleStr, doubleStr);
+        }
     }
 
     static void add_int(String val1, String val2){
@@ -61,18 +61,16 @@ class LLVMGenerator {
     }
 
     static void print_int_var(String id) {
-        header_text += "@str" + string_declaration_iter + " = constant [4 x i8] c\"%d\\0A\\00\"\n";
+        declare_string(VarType.INT);
         load_int(id);
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + string_declaration_iter + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
-        string_declaration_iter++;
+        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
         reg_iter++;
     }
 
     static void print_double_var(String id) {
-        header_text += "@str" + string_declaration_iter + " = constant [4 x i8] c\"%f\\0A\\00\"\n";
+        declare_string(VarType.DOUBLE);
         load_double(id);
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + string_declaration_iter + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
-        string_declaration_iter++;
+        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
         reg_iter++;
     }
 
@@ -115,6 +113,15 @@ class LLVMGenerator {
 
     static void declare_double(String id){
         main_text += "%" + id + " = alloca double\n";
+    }
+
+    static void declare_string(VarType type) {
+        String declarationTemplate = "@str" + string_declaration_iter + " = constant [4 x i8] %s";
+        switch (type) {
+            case INT -> header_text += String.format(declarationTemplate, "c\"%d\\0A\\00\"\n");
+            case DOUBLE -> header_text += String.format(declarationTemplate, "c\"%f\\0A\\00\"\n");
+        }
+        string_declaration_iter++;
     }
 
     private static void reset() {

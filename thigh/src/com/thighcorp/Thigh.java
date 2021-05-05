@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class Thigh {
-    String in_filepath;
-    String out_filepath;
+    private final String in_filepath;
+    private final String out_filepath;
 
     public Thigh(String thigh_filepath, String ir_filepath) {
         in_filepath = thigh_filepath;
@@ -21,13 +21,11 @@ public class Thigh {
         ThighLexer lexer = new ThighLexer(CharStreams.fromFileName(this.in_filepath));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ThighParser parser = new ThighParser(tokens);
-        ParseTree tree = parser.program();
-        return tree;
+        return parser.program();
     }
 
      void parse(String out_filepath, ParseTree tree) {
         /* Parsing to IR LLVM **/
-//        System.setOut(new ProxyPrintStream(System.out, out_filepath));
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new ThighCustomListener(out_filepath), tree);
     }
