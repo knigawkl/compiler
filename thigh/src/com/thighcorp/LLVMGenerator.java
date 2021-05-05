@@ -38,14 +38,14 @@ class LLVMGenerator {
         ch_i++;
     }
 
-    static void print(String text) {
-        int str_len = text.length();
-        String str_type = "[" + (str_len+2) + " x i8]";
-        header_text += "@str"+str_i+" = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
-        main_text += "%" + fun_i + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( "+str_type+", "+str_type+"* @str"+str_i+", i32 0, i32 0))\n";
-        str_i++;
-        fun_i++;
-    }
+//    static void print(String text) {
+//        int str_len = text.length();
+//        String str_type = "[" + (str_len+2) + " x i8]";
+//        header_text += "@str"+str_i+" = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
+//        main_text += "%" + fun_i + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( "+str_type+", "+str_type+"* @str"+str_i+", i32 0, i32 0))\n";
+//        str_i++;
+//        fun_i++;
+//    }
 
     static void print_int_variable(String id) {
         main_text += "%"+reg+" = load i32, i32* %"+id+"\n";

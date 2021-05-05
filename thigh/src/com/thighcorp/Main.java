@@ -11,8 +11,9 @@ public class Main {
         String ll_dir = String.format(base_dir, "ll", "%s", "ll");
 
 //        String filename = "test-print-variable";
-        String filename = "test-input-print-variable";
-//        String filename = "test-assign-print-variable";
+        String filename = "test-assign-print-variable";
+//        String filename = "test-input-print-variable";
+
         Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));
         t.run();
     }

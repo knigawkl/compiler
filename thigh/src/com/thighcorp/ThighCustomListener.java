@@ -30,35 +30,42 @@ public class ThighCustomListener extends ThighBaseListener {
         String ID;
         try {
             // accessing ctx.value().ID() is dangerous
-            // if value is not a variable, NullPointer is what we face :/
+            // if value is not a variable, NullPointer is what we would face
             ID = ctx.value().ID().getText();
         } catch (Exception e) {
             ID = "";
         }
-
-        if (this.variableMap.containsKey(ID)) {
-            LLVMGenerator.print_string(this.variableMap.get(ID));
-        } else if (ctx.value().INT() != null) {
-            LLVMGenerator.print(ctx.value().INT().getText());
-        } else if (ctx.value().REAL() != null) {
-            LLVMGenerator.print(ctx.value().REAL().getText());
-        } else if (ctx.value().STRING() != null) {
-            LLVMGenerator.print_string(value);
+        boolean isVariable = !ID.equals("");
+        if (isVariable) {
+            if (this.variableMap.containsKey(ID)) {
+                LLVMGenerator.print_string(this.variableMap.get(ID));
+            } else {
+                ctx.getStart().getLine();
+                System.err.println("Line "+ ctx.getStart().getLine()+", unknown variable: "+ID);
+            }
+        } else {
+            if (ctx.value().INT() != null) {
+                LLVMGenerator.print_string(ctx.value().INT().getText());
+            } else if (ctx.value().REAL() != null) {
+                LLVMGenerator.print_string(ctx.value().REAL().getText());
+            } else if (ctx.value().STRING() != null) {
+                LLVMGenerator.print_string(value);
+            }
         }
     }
 
     @Override
     public void exitRead_statement(ThighParser.Read_statementContext ctx) {
         String ID = ctx.ID().getText();
-//        if(!variables.contains(ID)) {
-//            variables.add(ID);
-//            LLVMGenerator.declare(ID);
-//        }
-        if (variableMap.containsKey(ID)) {
-            variableMap.put(ID, "");
+        if(!variables.contains(ID)) {
+            variables.add(ID);
             LLVMGenerator.declare(ID);
         }
-        LLVMGenerator.input(ID);
+//        if (variableMap.containsKey(ID)) {
+//            variableMap.put(ID, "");
+//            LLVMGenerator.declare(ID);
+//        }
+//        LLVMGenerator.input(ID);
     }
 
     @Override

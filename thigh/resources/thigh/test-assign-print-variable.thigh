@@ -1,2 +1,6 @@
-a = "thigh";
-print a;
+stringVar = "thigh";
+intVar = 10;
+realVar = 10.10;
+print stringVar;
+print intVar;
+print realVar;
