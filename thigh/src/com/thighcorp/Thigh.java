@@ -27,7 +27,7 @@ public class Thigh {
 
      void parse(String out_filepath, ParseTree tree) {
         /* Parsing to IR LLVM **/
-        System.setOut(new ProxyPrintStream(System.out, out_filepath));
+//        System.setOut(new ProxyPrintStream(System.out, out_filepath));
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new ThighCustomListener(), tree);
     }
