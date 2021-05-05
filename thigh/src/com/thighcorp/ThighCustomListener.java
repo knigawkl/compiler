@@ -83,22 +83,6 @@ public class ThighCustomListener extends ThighBaseListener {
             LLVMGenerator.declare_string(variableName);
             LLVMGenerator.assign_string(variableName, v.name);
         }
-//        var assignedValue = ctx.assign_value().value();
-//        var assignedArithmeticOperation = ctx.assign_value().arithmetic_operation();
-//
-//        if (assignedValue != null) {
-//            if (assignedValue.STRING() != null) {
-//                var tmp = assignedValue.STRING().getText();
-//                tmp = tmp.substring(1, tmp.length()-1);
-//                this.variableMapOld.put(variableName, tmp);
-//            } else if (assignedValue.INT() != null) {
-//                this.variableMapOld.put(variableName, assignedValue.INT().getText());
-//            } else if (assignedValue.REAL() != null) {
-//                this.variableMapOld.put(variableName, assignedValue.REAL().getText());
-//            }
-//        } else if (assignedArithmeticOperation != null) {
-//            this.variableMapOld.put(variableName, assignedArithmeticOperation.getText());
-//        }
     }
 
     @Override
