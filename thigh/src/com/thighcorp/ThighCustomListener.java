@@ -1,9 +1,11 @@
 package com.thighcorp;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Stack;
 
-enum VarType{INT, DOUBLE, STRING, UNKNOWN}
+enum VarType{INT, DOUBLE, STRING}
 
 class Value {
     public String name;
@@ -15,18 +17,26 @@ class Value {
 }
 
 public class ThighCustomListener extends ThighBaseListener {
+    private final String out_file;
     HashMap<String, VarType> variables = new HashMap<>();
     HashMap<String, String> strMemory = new HashMap<>();
     Stack<Value> stack = new Stack<>();
 
-    @Override
-    public void enterProgram(ThighParser.ProgramContext ctx) {
-
+    public ThighCustomListener(String ll_file) {
+        out_file = ll_file;
     }
 
     @Override
     public void exitProgram(ThighParser.ProgramContext ctx) {
-        System.out.println(LLVMGenerator.generate());
+        String intermesiate_representation = LLVMGenerator.generate();
+        FileWriter llWriter = null;
+        try {
+            llWriter = new FileWriter(out_file);
+            llWriter.write(intermesiate_representation);
+            llWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

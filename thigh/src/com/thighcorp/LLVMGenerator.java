@@ -4,7 +4,6 @@ class LLVMGenerator {
 
     static String header_text = "";
     static String main_text = "";
-    static String buffer = "";
     static int string_declaration_iter = 0;
     static int reg_iter = 1;
 
@@ -19,6 +18,7 @@ class LLVMGenerator {
         text += "define i32 @main() nounwind{\n";
         text += main_text;
         text += "ret i32 0 }\n";
+        reset();
         return text;
     }
 
@@ -115,5 +115,12 @@ class LLVMGenerator {
 
     static void declare_double(String id){
         main_text += "%" + id + " = alloca double\n";
+    }
+
+    private static void reset() {
+        header_text = "";
+        main_text = "";
+        string_declaration_iter = 0;
+        reg_iter = 1;
     }
 }

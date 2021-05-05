@@ -29,7 +29,7 @@ public class Thigh {
         /* Parsing to IR LLVM **/
 //        System.setOut(new ProxyPrintStream(System.out, out_filepath));
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new ThighCustomListener(), tree);
+        walker.walk(new ThighCustomListener(out_filepath), tree);
     }
 
     void getANTLRErrors() throws IOException {

@@ -15,14 +15,17 @@ public class Main {
                                                       "test-input-print-variable");
 
         test_filenames.forEach(t -> {
-            System.setOut(new ProxyPrintStream(System.out, String.format(ll_dir, t)));
+//            var proxy = new ProxyPrintStream(System.out, String.format(ll_dir, t));
+//            System.setOut(proxy);
             Thigh tai = new Thigh(String.format(thigh_dir, t), String.format(ll_dir, t));
             try {
                 tai.run();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
+//            proxy = null;
+//            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         });
     }
 }
