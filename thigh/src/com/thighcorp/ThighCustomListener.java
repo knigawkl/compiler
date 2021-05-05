@@ -51,8 +51,8 @@ public class ThighCustomListener extends ThighBaseListener {
         boolean isVariable = (type != null);
         if (isVariable) {
             switch (type) {
-                case INT -> LLVMGenerator.print_int_var(variableName);
-                case DOUBLE -> LLVMGenerator.print_double_var(variableName);
+                case INT -> LLVMGenerator.printVariable(variableName, VarType.INT);
+                case DOUBLE -> LLVMGenerator.printVariable(variableName, VarType.DOUBLE);
                 case STRING -> LLVMGenerator.print_string(strMemory.get(variableName));
             }
         } else if (ctx.value().INT() != null) {
