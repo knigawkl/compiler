@@ -30,18 +30,19 @@ class LLVMGenerator {
         }
     }
 
-    static void print_int_var(String id) {
-        declareString(VarType.INT);
-        loadVariable(id, VarType.INT);
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
-        reg_iter++;
-    }
-
-    static void print_double_var(String id) {
-        declareString(VarType.DOUBLE);
-        loadVariable(id, VarType.DOUBLE);
-        main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
-        reg_iter++;
+    static void printVariable(String id, VarType type) {
+        // TODO: create common string template for printing both ints and doubles
+        if (type == VarType.INT) {
+            declareString(VarType.INT);
+            loadVariable(id, VarType.INT);
+            main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
+            reg_iter++;
+        } else if (type == VarType.DOUBLE) {
+            declareString(VarType.DOUBLE);
+            loadVariable(id, VarType.DOUBLE);
+            main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
+            reg_iter++;
+        }
     }
 
     static void printString(String text) {

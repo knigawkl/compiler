@@ -40,19 +40,14 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitStatement(ThighParser.StatementContext ctx) {
-
-    }
-
-    @Override
     public void exitPrint(ThighParser.PrintContext ctx) {
         var variableName = getVariableName(ctx);
         VarType type = variables.get(variableName);
         boolean isVariable = (type != null);
         if (isVariable) {
             switch (type) {
-                case INT -> LLVMGenerator.print_int_var(variableName);
-                case DOUBLE -> LLVMGenerator.print_double_var(variableName);
+                case INT -> LLVMGenerator.printVariable(variableName, VarType.INT);
+                case DOUBLE -> LLVMGenerator.printVariable(variableName, VarType.DOUBLE);
                 case STRING -> LLVMGenerator.printString(strMemory.get(variableName));
             }
         } else if (ctx.value().INT() != null) {
@@ -84,8 +79,7 @@ public class ThighCustomListener extends ThighBaseListener {
                 }
                 case "string" -> {
                     variables.put(variableName, VarType.STRING);
-//                    LLVMGenerator.declare_string(variableName);
-//                    LLVMGenerator.input_string(variableName);
+                    // TODO
                 }
             }
         }
@@ -120,23 +114,13 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitExpression(ThighParser.ExpressionContext ctx) {
-
-    }
-
-    @Override
     public void exitArithmetic_operation(ThighParser.Arithmetic_operationContext ctx) {
-
-    }
-
-    @Override
-    public void enterArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
-
+        // TODO
     }
 
     @Override
     public void exitArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
-
+        // TODO
     }
 
     @Override
