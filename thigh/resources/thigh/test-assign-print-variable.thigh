@@ -1,4 +1,4 @@
-# "stringVar";
+stringVar = "matlab";
 intVar = 10;
 realVar = 10.10;
 # "print stringVar";

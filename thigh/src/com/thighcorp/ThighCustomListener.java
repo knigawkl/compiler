@@ -49,7 +49,8 @@ public class ThighCustomListener extends ThighBaseListener {
         } else if (ctx.value().REAL() != null) {
             LLVMGenerator.print_string(ctx.value().REAL().getText());
         } else if (ctx.value().STRING() != null) {
-            LLVMGenerator.print_string(ctx.value().STRING().getText());
+            String str = ctx.value().STRING().getText();
+            LLVMGenerator.print_string(str.substring(1, str.length()-1));
         }
     }
 

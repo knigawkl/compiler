@@ -13,7 +13,6 @@ class LLVMGenerator {
         String text = "";
         text += "declare i32 @printf(i8*, ...)\n";
         text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
-//        text += "@strp = constant [4 x i8] c\"%d\\0A\\00\"\n";
         text += "@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n";
         text += "@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n";
         text += "@strs = constant [3 x i8] c\"%d\\00\"\n";
@@ -121,7 +120,7 @@ class LLVMGenerator {
         // TODO: this probably won't work
         main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
         reg++;
-        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strp, i32 0, i32 0), i32 %"+(reg-1)+")\n";
+        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strs, i32 0, i32 0), i32 %"+(reg-1)+")\n";
         reg++;
     }
 
