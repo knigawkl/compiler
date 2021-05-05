@@ -47,21 +47,6 @@ class LLVMGenerator {
         main_text += "store double "+value+", double* %"+id+"\n";
     }
 
-    static void assign_string(String id, String value) {
-        // TODO: check if this is sufficient for strings
-        //       this is same as for ints atm
-        main_text += "store i32 "+value+", i32* %"+id+"\n";
-    }
-
-    static void print(String text) {
-        int str_len = text.length();
-        String str_type = "[" + (str_len+2) + " x i8]";
-        header_text += "@str"+str_i+" = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
-        main_text += "%" + fun_i + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( "+str_type+", "+str_type+"* @str"+str_i+", i32 0, i32 0))\n";
-        str_i++;
-        fun_i++;
-    }
-
     static void load_i32(String id) {
         main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
         reg++;
@@ -116,20 +101,13 @@ class LLVMGenerator {
         reg++;
     }
 
-    static void print_string_var(String id) {
-        // TODO: this probably won't work
-        main_text += "%"+reg+" = load i32, i32* %"+id+"\n";
-        reg++;
-        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strs, i32 0, i32 0), i32 %"+(reg-1)+")\n";
-        reg++;
-    }
-
     static void print_string(String text) {
         int str_len = text.length();
         String str_type = "[" + (str_len+2) + " x i8]";
         header_text += "@str" + str_i + " = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
-        main_text += "call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + str_i + ", i32 0, i32 0))\n";
+        main_text += "%"+reg+" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + str_i + ", i32 0, i32 0))\n";
         str_i++;
+        reg++;
     }
 
     static void input(String id) {
@@ -143,11 +121,5 @@ class LLVMGenerator {
 
     static void declare_double(String id){
         main_text += "%"+id+" = alloca double\n";
-    }
-
-    static void declare_string(String id){
-        // TODO: check if such declaration is sufficient for strings
-        //       this is same as int declaration atm
-        main_text += "%"+id+" = alloca i32\n";
     }
 }

@@ -1,6 +1,6 @@
 stringVar = "matlab";
 intVar = 10;
 realVar = 10.10;
-# "print stringVar";
+print stringVar;
 print intVar;
 print realVar;

@@ -16,6 +16,7 @@ class Value {
 
 public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, VarType> variables = new HashMap<>();
+    HashMap<String, String> strMemory = new HashMap<>();
     Stack<Value> stack = new Stack<>();
 
     @Override
@@ -42,7 +43,7 @@ public class ThighCustomListener extends ThighBaseListener {
             switch (type) {
                 case INT -> LLVMGenerator.print_int_var(variableName);
                 case REAL -> LLVMGenerator.print_double_var(variableName);
-                case STRING -> LLVMGenerator.print_string_var(variableName);
+                case STRING -> LLVMGenerator.print_string(strMemory.get(variableName));
             }
         } else if (ctx.value().INT() != null) {
             LLVMGenerator.print_string(ctx.value().INT().getText());
@@ -81,8 +82,9 @@ public class ThighCustomListener extends ThighBaseListener {
             LLVMGenerator.declare_double(variableName);
             LLVMGenerator.assign_double(variableName, v.name);
         } else if (v.type == VarType.STRING) {
-            LLVMGenerator.declare_string(variableName);
-            LLVMGenerator.assign_string(variableName, v.name);
+            String tmp = ctx.assign_value().getText();
+            tmp = tmp.substring(1, tmp.length()-1);
+            strMemory.put(variableName, tmp);
         }
     }
 
