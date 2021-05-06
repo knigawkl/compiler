@@ -1,7 +1,0 @@
-i = 1;
-int i++;
-print i;
-
-d = 1.0;
-double d++;
-print d;

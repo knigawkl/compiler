@@ -1,0 +1,25 @@
+#"integer variations";
+
+print "i set to equal 1";
+i = 1;
+
+int i++;
+print "i incremented";
+print i;
+
+int i--;
+print "i decremented";
+print i;
+
+#"double variations";
+
+print "d set to equal 1.0";
+d = 1.0;
+
+double d++;
+print "d incremented";
+print d;
+
+double d--;
+print "d decremented";
+print d;

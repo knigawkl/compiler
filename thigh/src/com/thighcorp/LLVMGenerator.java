@@ -163,6 +163,25 @@ class LLVMGenerator {
         register++;
     }
 
+    public static void decrease(String id, VarType type) {
+        int intSize = 4;
+        int doubleSize = 8;
+        var increaseLoadTemplate = "%%" + register + " = load %s, %s* %%" + id + ", align %s\n";
+        register++;
+        var increaseTemplate = "%%" + register + " = %s %s %%" + (register - 1) + ", %s\n" + "store %s %%" + register + ", %s* %%" + id + ", align %s\n";
+        switch (type) {
+            case INT -> {
+                content += String.format(increaseLoadTemplate, integerStr, integerStr, intSize);
+                content += String.format(increaseTemplate, "sub nsw", integerStr, 1, integerStr, integerStr, intSize);
+            }
+            case DOUBLE -> {
+                content += String.format(increaseLoadTemplate, doubleStr, doubleStr, doubleSize);
+                content += String.format(increaseTemplate, "fsub ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
+            }
+        }
+        register++;
+    }
+
     private static void reset() {
         header = "";
         content = "";

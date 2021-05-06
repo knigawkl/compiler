@@ -7,6 +7,7 @@ statement: expression
          | read_statement
          | assign_statement
          | increment
+         | decrement
          | comment;
 
 printStatement: PRINT value SEMICOLON #print;
@@ -14,6 +15,7 @@ read_statement: READ type ID SEMICOLON #read;
 assign_statement: ID ASSIGN assign_value SEMICOLON #assign;
 assign_value: (value | arithmeticOperation) #assignVal;
 increment: type ID ADDITION ADDITION SEMICOLON;
+decrement: type ID SUBTRACTION SUBTRACTION SEMICOLON;
 comment: COMMENT STRING SEMICOLON;
 
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;

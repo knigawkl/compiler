@@ -20,7 +20,7 @@ public class Main {
 //                "test-multiplication",
 //                "test-castingToDouble",
 //                "test-castingToInt",
-                "test-increment"
+                "test-variation"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

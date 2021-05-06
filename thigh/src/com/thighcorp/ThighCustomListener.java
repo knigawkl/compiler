@@ -227,6 +227,15 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
+    public void exitDecrement(ThighParser.DecrementContext ctx) {
+        var variableName = ctx.ID().getText();
+        switch (ctx.type().getText()) {
+            case "int" -> LLVMGenerator.decrease(variableName, VarType.INT);
+            case "double" -> LLVMGenerator.decrease(variableName, VarType.DOUBLE);
+        }
+    }
+
+    @Override
     public void exitValue(ThighParser.ValueContext ctx) {
         if (ctx.INT() != null) {
             stack.push(new Value(ctx.INT().getText(), VarType.INT));
