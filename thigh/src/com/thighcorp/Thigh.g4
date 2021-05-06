@@ -22,7 +22,9 @@ expression: arithmeticOperation SEMICOLON;
 //                    | arithmetic_operation arithmetic_operator arithmetic_operation
 //                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
 //arithmetic_operation: (arithmetic_value | arithmetic_operator)*;
-arithmeticOperation: additionOperation | subtractionOperation | divisionOperation;
+arithmeticOperation: additionOperation | subtractionOperation | divisionOperation | multiplicationOperation;
+
+multiplicationOperation: value | value MULTIPLICATION value;
 
 divisionOperation: value | value DIVISION value;
 

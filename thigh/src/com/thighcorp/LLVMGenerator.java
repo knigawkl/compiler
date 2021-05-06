@@ -129,6 +129,14 @@ class LLVMGenerator {
         reg_iter++;
     }
 
+    public static void mul(String val1, String val2, VarType type) {
+        var multiplyingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        switch (type) {
+            case INT -> main_text += String.format(multiplyingTemplate, "mul", integerStr);
+            case DOUBLE -> main_text += String.format(multiplyingTemplate, "fmul", doubleStr);
+        }
+        reg_iter++;
+    }
 
     public static void div(String val1, String val2, VarType type) {
         var divisionTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
