@@ -1,6 +1,9 @@
 x = 4 * 4;
 y = 4.0 * 4.0;
 z = 4.0 * 0.0;
+print "Calculating 4 * 4";
 print x;
+print "Calculating 4.0 * 4.0";
 print y;
+print "Calculating 4.0 * 0.0";
 print z;

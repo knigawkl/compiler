@@ -147,16 +147,14 @@ class LLVMGenerator {
     public static void increase(String id, VarType type) {
         int intSize = 4;
         int doubleSize = 8;
-        var increaseLoadTemplate = "%%" + register + " = load %s, %s* %%" + id + ", align %s\n";
-        register++;
-        var increaseTemplate = "%%" + register + " = %s %s %%" + (register - 1) + ", %s\n" + "store %s %%" + register + ", %s* %%" + id + ", align %s\n";
+        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* %%" + id + ", align %s\n";
         switch (type) {
             case INT -> {
-                content += String.format(increaseLoadTemplate, integerStr, integerStr, intSize);
+                loadVariable(id, VarType.INT);
                 content += String.format(increaseTemplate, "add nsw", integerStr, 1, integerStr, integerStr, intSize);
             }
             case DOUBLE -> {
-                content += String.format(increaseLoadTemplate, doubleStr, doubleStr, doubleSize);
+                loadVariable(id, VarType.DOUBLE);
                 content += String.format(increaseTemplate, "fadd ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
             }
         }

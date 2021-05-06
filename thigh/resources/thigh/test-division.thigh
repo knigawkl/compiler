@@ -1,4 +1,6 @@
 x = 69 / 13;
 y = 20.0 / 3.12;
+print "Calculating 69 / 13";
 print x;
+print "Calculating 20.0 / 3.12";
 print y;
