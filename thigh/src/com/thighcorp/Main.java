@@ -10,16 +10,15 @@ public class Main {
 
     public static void main(String[] args) {
         var test_filenames = Arrays.asList(
-//                "test-print",
-//                "test-assign-print-variable",
-//                "test-input-print-variable",
-//                "test-addition",
-//                "test-subtracting",
-//                "test-division",
-//                "test-division-zero", // TODO we print error but program continues
-//                "test-multiplication",
-//                "test-castingToDouble",
-//                "test-castingToInt",
+                "test-print",
+                "test-assign-variable",
+                "test-input-variable",
+                "test-addition",
+                "test-subtracting",
+                "test-division",
+                "test-multiplication",
+                "test-castingToDouble",
+                "test-castingToInt",
                 "test-variation"
         );
         test_filenames.forEach(filename -> {
