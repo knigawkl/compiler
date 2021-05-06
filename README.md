@@ -51,10 +51,10 @@ quotient = 69 / 13;
 ```
 x = 1;
 y = 1.0;
-x++;
-y++;
-x--;
-y--;
+int x++;
+double y++;
+int x--;
+double y--;
 ```
 
 #### Comments
