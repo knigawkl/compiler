@@ -10,17 +10,17 @@ public class Main {
 
     public static void main(String[] args) {
         var test_filenames = Arrays.asList(
-                                                      "test-print-variable",
-                                                      "test-assign-print-variable",
-                                                      "test-input-print-variable",
-//                                                      "test-int-double-casting",
-                                                      "test-addition",
-                "test-subtracting",
-                "test-division",
-//                "test-division-zero", //TODO we print error but program continues
-                "test-multiplication",
-                "test-castingToDouble",
-                "test-castingToInt"
+//                "test-print",
+//                "test-assign-print-variable",
+//                "test-input-print-variable",
+//                "test-addition",
+//                "test-subtracting",
+//                "test-division",
+//                "test-division-zero", // TODO we print error but program continues
+//                "test-multiplication",
+//                "test-castingToDouble",
+//                "test-castingToInt",
+                "test-increment"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

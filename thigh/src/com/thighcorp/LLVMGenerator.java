@@ -2,10 +2,10 @@ package com.thighcorp;
 
 class LLVMGenerator {
 
-    private static String header_text = "";
-    private static String main_text = "";
+    private static String header = "";
+    private static String content = "";
     private static int string_declaration_iter = 0;
-    public static int reg_iter = 1;
+    public static int register = 1;
     private static final String integerStr = "i32";
     private static final String doubleStr = "double";
 
@@ -13,10 +13,9 @@ class LLVMGenerator {
         String text = "";
         text += "declare i32 @printf(i8*, ...)\n";
         text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
-        text += "@strs = constant [3 x i8] c\"%d\\00\"\n";
-        text += header_text;
+        text += header;
         text += "define i32 @main() nounwind{\n";
-        text += main_text;
+        text += content;
         text += "ret i32 0 }\n";
         reset();
         return text;
@@ -25,8 +24,8 @@ class LLVMGenerator {
     static void assign(String id, String value, VarType type) {
         String assignmentTemplate = "store %s " + value + ", %s* %%" + id + "\n";
         switch (type) {
-            case INT -> main_text += String.format(assignmentTemplate, integerStr, integerStr);
-            case DOUBLE -> main_text += String.format(assignmentTemplate, doubleStr, doubleStr);
+            case INT -> content += String.format(assignmentTemplate, integerStr, integerStr);
+            case DOUBLE -> content += String.format(assignmentTemplate, doubleStr, doubleStr);
         }
     }
 
@@ -35,122 +34,139 @@ class LLVMGenerator {
         if (type == VarType.INT) {
             declareString(VarType.INT);
             loadVariable(id, VarType.INT);
-            main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (reg_iter -1) + ")\n";
-            reg_iter++;
+            content += "%" + register + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), i32 %" + (register -1) + ")\n";
+            register++;
         } else if (type == VarType.DOUBLE) {
             declareString(VarType.DOUBLE);
             loadVariable(id, VarType.DOUBLE);
-            main_text += "%" + reg_iter + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (reg_iter-1) + ")\n";
-            reg_iter++;
+            content += "%" + register + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @str" + (string_declaration_iter - 1) + ", i32 0, i32 0), double %" + (register -1) + ")\n";
+            register++;
         }
     }
 
     static void printString(String text) {
         int str_len = text.length();
         String str_type = "[" + (str_len+2) + " x i8]";
-        header_text += "@str" + string_declaration_iter + " = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
-        main_text += "%"+ reg_iter +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + string_declaration_iter + ", i32 0, i32 0))\n";
+        header += "@str" + string_declaration_iter + " = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
+        content += "%"+ register +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + string_declaration_iter + ", i32 0, i32 0))\n";
         string_declaration_iter++;
-        reg_iter++;
+        register++;
     }
 
     static void inputVariable(String id, VarType type) {
         var headerTemplate = "@str" + string_declaration_iter + " = constant %s";
-        var mainTemplate = "%%" + reg_iter + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds (%s* @str"
+        var mainTemplate = "%%" + register + " = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds (%s* @str"
                 + string_declaration_iter + ", i32 0, i32 0), %s* %%" + id + ")\n";
         switch (type) {
             case INT -> {
-                header_text += String.format(headerTemplate, "[3 x i8] c\"%d\\00\"\n");
-                main_text += String.format(mainTemplate, "[3 x i8], [3 x i8]", integerStr);
+                header += String.format(headerTemplate, "[3 x i8] c\"%d\\00\"\n");
+                content += String.format(mainTemplate, "[3 x i8], [3 x i8]", integerStr);
             } case DOUBLE -> {
-                header_text += String.format(headerTemplate, "[4 x i8] c\"%lf\\00\"\n");;
-                main_text += String.format(mainTemplate, "[4 x i8], [4 x i8]", doubleStr);
+                header += String.format(headerTemplate, "[4 x i8] c\"%lf\\00\"\n");;
+                content += String.format(mainTemplate, "[4 x i8], [4 x i8]", doubleStr);
             } case STRING -> {
                 // TODO
             }
         }
         string_declaration_iter++;
-        reg_iter++;
+        register++;
     }
 
     static void loadVariable(String id, VarType type) {
-        String loadingTemplate = "%%"+ reg_iter +" = load %s, %s* %%"+id+"\n";
+        String loadingTemplate = "%%"+ register +" = load %s, %s* %%"+id+"\n";
         switch (type) {
-            case INT -> main_text += String.format(loadingTemplate, integerStr, integerStr);
-            case DOUBLE -> main_text += String.format(loadingTemplate, doubleStr, doubleStr);
+            case INT -> content += String.format(loadingTemplate, integerStr, integerStr);
+            case DOUBLE -> content += String.format(loadingTemplate, doubleStr, doubleStr);
         }
-        reg_iter++;
+        register++;
     }
 
     static void declareVariable(String id, VarType type) {
         String declarationTemplate = "%%" + id + " = alloca %s\n";
         switch (type) {
-            case INT -> main_text += String.format(declarationTemplate, integerStr);
-            case DOUBLE -> main_text += String.format(declarationTemplate, doubleStr);
+            case INT -> content += String.format(declarationTemplate, integerStr);
+            case DOUBLE -> content += String.format(declarationTemplate, doubleStr);
         }
     }
 
     static void declareString(VarType type) {
         String declarationTemplate = "@str" + string_declaration_iter + " = constant [4 x i8] %s";
         switch (type) {
-            case INT -> header_text += String.format(declarationTemplate, "c\"%d\\0A\\00\"\n");
-            case DOUBLE -> header_text += String.format(declarationTemplate, "c\"%f\\0A\\00\"\n");
+            case INT -> header += String.format(declarationTemplate, "c\"%d\\0A\\00\"\n");
+            case DOUBLE -> header += String.format(declarationTemplate, "c\"%f\\0A\\00\"\n");
         }
         string_declaration_iter++;
     }
 
     public static void castToInt(String id) {
-        main_text += "%" + reg_iter + " = fptosi double " + id + " to i32\n";
-        reg_iter++;
+        content += "%" + register + " = fptosi double " + id + " to i32\n";
+        register++;
     }
 
     public static void castToDouble(String id) {
-        main_text += "%" + reg_iter + " = sitofp i32 " + id + " to double\n";
-        reg_iter++;
+        content += "%" + register + " = sitofp i32 " + id + " to double\n";
+        register++;
     }
 
     public static void add(String val1, String val2, VarType type) {
-        var addingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        var addingTemplate = "%%" + register + " = %s %s " + val1 + ", " + val2 + "\n";
         switch (type) {
-            case INT -> main_text += String.format(addingTemplate, "add", integerStr);
-            case DOUBLE -> main_text += String.format(addingTemplate, "fadd", doubleStr);
+            case INT -> content += String.format(addingTemplate, "add", integerStr);
+            case DOUBLE -> content += String.format(addingTemplate, "fadd", doubleStr);
         }
-        reg_iter++;
-    }
-
-    private static void reset() {
-        header_text = "";
-        main_text = "";
-        string_declaration_iter = 0;
-        reg_iter = 1;
+        register++;
     }
 
     public static void sub(String val1, String val2, VarType type) {
-        var subtractingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        var subtractingTemplate = "%%" + register + " = %s %s " + val1 + ", " + val2 + "\n";
         switch (type) {
-            case INT -> main_text += String.format(subtractingTemplate, "sub", integerStr);
-            case DOUBLE -> main_text += String.format(subtractingTemplate, "fsub", doubleStr);
+            case INT -> content += String.format(subtractingTemplate, "sub", integerStr);
+            case DOUBLE -> content += String.format(subtractingTemplate, "fsub", doubleStr);
         }
-        reg_iter++;
+        register++;
     }
 
     public static void mul(String val1, String val2, VarType type) {
-        var multiplyingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        var multiplyingTemplate = "%%" + register + " = %s %s " + val1 + ", " + val2 + "\n";
         switch (type) {
-            case INT -> main_text += String.format(multiplyingTemplate, "mul", integerStr);
-            case DOUBLE -> main_text += String.format(multiplyingTemplate, "fmul", doubleStr);
+            case INT -> content += String.format(multiplyingTemplate, "mul", integerStr);
+            case DOUBLE -> content += String.format(multiplyingTemplate, "fmul", doubleStr);
         }
-        reg_iter++;
+        register++;
     }
 
     public static void div(String val1, String val2, VarType type) {
-        var divisionTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        var divisionTemplate = "%%" + register + " = %s %s " + val1 + ", " + val2 + "\n";
         switch (type) {
-            case INT -> main_text += String.format(divisionTemplate, "sdiv", integerStr);
-            case DOUBLE -> main_text += String.format(divisionTemplate, "fdiv", doubleStr);
+            case INT -> content += String.format(divisionTemplate, "sdiv", integerStr);
+            case DOUBLE -> content += String.format(divisionTemplate, "fdiv", doubleStr);
         }
-        reg_iter++;
+        register++;
     }
 
+    public static void increase(String id, VarType type) {
+        int intSize = 4;
+        int doubleSize = 8;
+        var increaseLoadTemplate = "%%" + register + " = load %s, %s* %%" + id + ", align %s\n";
+        register++;
+        var increaseTemplate = "%%" + register + " = %s %s %%" + (register - 1) + ", %s\n" + "store %s %%" + register + ", %s* %%" + id + ", align %s\n";
+        switch (type) {
+            case INT -> {
+                content += String.format(increaseLoadTemplate, integerStr, integerStr, intSize);
+                content += String.format(increaseTemplate, "add nsw", integerStr, 1, integerStr, integerStr, intSize);
+            }
+            case DOUBLE -> {
+                content += String.format(increaseLoadTemplate, doubleStr, doubleStr, doubleSize);
+                content += String.format(increaseTemplate, "fadd ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
+            }
+        }
+        register++;
+    }
 
+    private static void reset() {
+        header = "";
+        content = "";
+        string_declaration_iter = 0;
+        register = 1;
+    }
 }

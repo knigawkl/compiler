@@ -6,18 +6,20 @@ statement: expression
          | printStatement
          | read_statement
          | assign_statement
+         | increment
          | comment;
 
 printStatement: PRINT value SEMICOLON #print;
 read_statement: READ type ID SEMICOLON #read;
 assign_statement: ID ASSIGN assign_value SEMICOLON #assign;
 assign_value: (value | arithmeticOperation) #assignVal;
+increment: type ID ADDITION ADDITION SEMICOLON;
 comment: COMMENT STRING SEMICOLON;
 
 function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
 function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmeticOperation SEMICOLON;
-//
+
 //arithmetic_operation: arithmetic_value
 //                    | arithmetic_operation arithmetic_operator arithmetic_operation
 //                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
@@ -38,7 +40,6 @@ arithmetic_operator: ADDITION
                    | MODULO
                    | POWER;
 //arithmetic_value: (ID | INT | DOUBLE | toint_cast);
-//toint_cast: TOINT value;
 
 cast: TOINT | TODOUBLE;
 

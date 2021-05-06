@@ -128,11 +128,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.add(v1.val, v2.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.add(v1.val, v2.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE));
             }
         } else {
             System.err.printf("add type mismatch at line %s%n", ctx.getStart().getLine());
@@ -146,11 +146,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.sub(v2.val, v1.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.sub(v2.val, v1.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE));
             }
         } else {
             System.err.printf("substraction type mismatch at line %s%n", ctx.getStart().getLine());
@@ -170,11 +170,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.div(v2.val, v1.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.div(v2.val, v1.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE));
             }
         } else {
             System.err.printf("division type mismatch at line %s%n", ctx.getStart().getLine());
@@ -188,11 +188,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.mul(v1.val, v2.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.mul(v1.val, v2.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE));
             }
         } else {
             System.err.printf("multiplication type mismatch at line %s%n", ctx.getStart().getLine());
@@ -204,11 +204,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (ctx.TODOUBLE() != null){
             Value v = stack.pop();
             LLVMGenerator.castToDouble( v.val );
-            stack.push( new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE) );
+            stack.push( new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE) );
         }else if(ctx.TOINT() != null){
             Value v = stack.pop();
             LLVMGenerator.castToInt( v.val );
-            stack.push( new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT) );
+            stack.push( new Value("%"+(LLVMGenerator.register -1), VarType.INT) );
         }
     }
 
@@ -217,12 +217,14 @@ public class ThighCustomListener extends ThighBaseListener {
         // TODO
     }
 
-//    @Override
-//    public void exitToint_cast(ThighParser.Toint_castContext ctx) {
-//        Value v = stack.pop();
-//        LLVMGenerator.fptosi(v.val);
-//        stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
-//    }
+    @Override
+    public void exitIncrement(ThighParser.IncrementContext ctx) {
+        var variableName = ctx.ID().getText();
+        switch (ctx.type().getText()) {
+            case "int" -> LLVMGenerator.increase(variableName, VarType.INT);
+            case "double" -> LLVMGenerator.increase(variableName, VarType.DOUBLE);
+        }
+    }
 
     @Override
     public void exitValue(ThighParser.ValueContext ctx) {
