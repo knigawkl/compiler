@@ -99,8 +99,13 @@ class LLVMGenerator {
         string_declaration_iter++;
     }
 
-    public static void fptosi(String id) {
+    public static void castToInt(String id) {
         main_text += "%" + reg_iter + " = fptosi double " + id + " to i32\n";
+        reg_iter++;
+    }
+
+    public static void castToDouble(String id) {
+        main_text += "%" + reg_iter + " = sitofp i32 " + id + " to double\n";
         reg_iter++;
     }
 

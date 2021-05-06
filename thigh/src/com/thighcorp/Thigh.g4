@@ -39,7 +39,10 @@ arithmetic_operator: ADDITION
                    | POWER;
 //arithmetic_value: (ID | INT | DOUBLE | toint_cast);
 //toint_cast: TOINT value;
-value: ID | STRING | INT | DOUBLE;
+
+cast: TOINT | TODOUBLE;
+
+value: ID | STRING | INT | DOUBLE | value cast;
 type: 'int' | 'double' | 'string';
 
 PRINT: 'print';

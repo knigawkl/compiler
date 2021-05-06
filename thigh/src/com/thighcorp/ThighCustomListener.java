@@ -200,6 +200,19 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
+    public void exitCast(ThighParser.CastContext ctx) {
+        if (ctx.TODOUBLE() != null){
+            Value v = stack.pop();
+            LLVMGenerator.castToDouble( v.val );
+            stack.push( new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE) );
+        }else if(ctx.TOINT() != null){
+            Value v = stack.pop();
+            LLVMGenerator.castToInt( v.val );
+            stack.push( new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT) );
+        }
+    }
+
+    @Override
     public void exitArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
         // TODO
     }

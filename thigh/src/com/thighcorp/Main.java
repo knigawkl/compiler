@@ -18,7 +18,9 @@ public class Main {
                 "test-subtracting",
                 "test-division",
 //                "test-division-zero", //TODO we print error but program continues
-                "test-multiplication"
+                "test-multiplication",
+                "test-castingToDouble",
+                "test-castingToInt"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

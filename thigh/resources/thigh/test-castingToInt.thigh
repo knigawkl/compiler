@@ -1,0 +1,4 @@
+x = 6.9;
+y = 6.9 (int);
+print x;
+print y;

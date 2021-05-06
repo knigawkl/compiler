@@ -1,0 +1,4 @@
+x = 69;
+y = 69 (double);
+print x;
+print y;
