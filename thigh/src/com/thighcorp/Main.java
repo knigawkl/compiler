@@ -14,7 +14,8 @@ public class Main {
                                                       "test-assign-print-variable",
                                                       "test-input-print-variable",
 //                                                      "test-int-double-casting",
-                                                      "test-addition");
+                                                      "test-addition",
+                                                      "test-subtracting");
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));
             try {

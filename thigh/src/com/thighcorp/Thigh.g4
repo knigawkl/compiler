@@ -22,11 +22,13 @@ expression: arithmeticOperation SEMICOLON;
 //                    | arithmetic_operation arithmetic_operator arithmetic_operation
 //                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
 //arithmetic_operation: (arithmetic_value | arithmetic_operator)*;
-arithmeticOperation: additionOperation;
+arithmeticOperation: additionOperation | subtractionOperation;
+
+subtractionOperation: value | value SUBTRACTION value;
 //additionOperation: arithmetic_value | arithmetic_value ADDITION arithmetic_value;
 additionOperation: value | value ADDITION value;
 arithmetic_operator: ADDITION
-                   | SUBSTITUTION
+                   | SUBTRACTION
                    | MULTIPLICATION
                    | DIVISION
                    | MODULO
@@ -50,7 +52,7 @@ TOINT: '(int)';
 TODOUBLE: '(double)';
 
 ADDITION: '+';
-SUBSTITUTION: '-';
+SUBTRACTION: '-';
 MULTIPLICATION: '*';
 DIVISION: '/';
 POWER: '^';

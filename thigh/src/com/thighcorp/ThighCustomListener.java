@@ -140,6 +140,28 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
+    public void exitSubtractionOperation(ThighParser.SubtractionOperationContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+        if (v1.type == v2.type) {
+            if (v1.type == VarType.INT) {
+                LLVMGenerator.sub(v2.val, v1.val, VarType.INT);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+            }
+            if (v1.type == VarType.DOUBLE) {
+                LLVMGenerator.sub(v2.val, v1.val, VarType.DOUBLE);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+            }
+        } else {
+            System.err.printf("substraction type mismatch at line %s%n", ctx.getStart().getLine());
+        }
+    }
+        } else {
+            System.err.printf("add type mismatch at line %s%n", ctx.getStart().getLine());
+        }
+    }
+
+    @Override
     public void exitArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
         // TODO
     }

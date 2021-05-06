@@ -119,4 +119,15 @@ class LLVMGenerator {
         string_declaration_iter = 0;
         reg_iter = 1;
     }
+
+    public static void sub(String val1, String val2, VarType type) {
+        var subtractingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        switch (type) {
+            case INT -> main_text += String.format(subtractingTemplate, "sub", integerStr);
+            case DOUBLE -> main_text += String.format(subtractingTemplate, "fsub", doubleStr);
+        }
+        reg_iter++;
+    }
+
+
 }
