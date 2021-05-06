@@ -8,10 +8,10 @@ import java.util.Stack;
 enum VarType{INT, DOUBLE, STRING}
 
 class Value {
-    public String name;
+    public String val;
     public VarType type;
     public Value(String name, VarType type){
-        this.name = name;
+        this.val = name;
         this.type = type;
     }
 }
@@ -90,12 +90,15 @@ public class ThighCustomListener extends ThighBaseListener {
         var variableName = ctx.ID().getText();
         Value v = stack.pop();
         variables.put(variableName, v.type);
+        if (v.val.charAt(0) == '%') {
+            v.val = "%" + v.val;
+        }
         if (v.type == VarType.INT) {
             LLVMGenerator.declareVariable(variableName, VarType.INT);
-            LLVMGenerator.assign(variableName, v.name, VarType.INT);
+            LLVMGenerator.assign(variableName, v.val, VarType.INT);
         } else if (v.type == VarType.DOUBLE) {
             LLVMGenerator.declareVariable(variableName, VarType.DOUBLE);
-            LLVMGenerator.assign(variableName, v.name, VarType.DOUBLE);
+            LLVMGenerator.assign(variableName, v.val, VarType.DOUBLE);
         } else if (v.type == VarType.STRING) {
             String tmp = ctx.assign_value().getText();
             tmp = tmp.substring(1, tmp.length()-1);
@@ -114,14 +117,39 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitArithmetic_operation(ThighParser.Arithmetic_operationContext ctx) {
-        // TODO
+    public void exitArithmeticOperation(ThighParser.ArithmeticOperationContext ctx) {
+
+    }
+
+    @Override
+    public void exitAdditionOperation(ThighParser.AdditionOperationContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+        if (v1.type == v2.type) {
+            if (v1.type == VarType.INT) {
+                LLVMGenerator.add(v1.val, v2.val, VarType.INT);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+            }
+            if (v1.type == VarType.DOUBLE) {
+                LLVMGenerator.add(v1.val, v2.val, VarType.DOUBLE);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+            }
+        } else {
+            System.err.printf("add type mismatch at line %s%n", ctx.getStart().getLine());
+        }
     }
 
     @Override
     public void exitArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
         // TODO
     }
+
+//    @Override
+//    public void exitToint_cast(ThighParser.Toint_castContext ctx) {
+//        Value v = stack.pop();
+//        LLVMGenerator.fptosi(v.val);
+//        stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+//    }
 
     @Override
     public void exitValue(ThighParser.ValueContext ctx) {

@@ -9,9 +9,12 @@ public class Main {
     private static final String ll_dir = String.format(base_dir, "ll", "%s", "ll");
 
     public static void main(String[] args) {
-        var test_filenames = Arrays.asList("test-print-variable",
+        var test_filenames = Arrays.asList(
+                                                      "test-print-variable",
                                                       "test-assign-print-variable",
-                                                      "test-input-print-variable");
+                                                      "test-input-print-variable",
+//                                                      "test-int-double-casting",
+                                                      "test-addition");
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));
             try {

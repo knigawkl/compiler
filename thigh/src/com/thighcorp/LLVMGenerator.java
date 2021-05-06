@@ -5,7 +5,7 @@ class LLVMGenerator {
     private static String header_text = "";
     private static String main_text = "";
     private static int string_declaration_iter = 0;
-    private static int reg_iter = 1;
+    public static int reg_iter = 1;
     private static final String integerStr = "i32";
     private static final String doubleStr = "double";
 
@@ -97,6 +97,20 @@ class LLVMGenerator {
             case DOUBLE -> header_text += String.format(declarationTemplate, "c\"%f\\0A\\00\"\n");
         }
         string_declaration_iter++;
+    }
+
+    public static void fptosi(String id) {
+        main_text += "%" + reg_iter + " = fptosi double " + id + " to i32\n";
+        reg_iter++;
+    }
+
+    public static void add(String val1, String val2, VarType type) {
+        var addingTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        switch (type) {
+            case INT -> main_text += String.format(addingTemplate, "add", integerStr);
+            case DOUBLE -> main_text += String.format(addingTemplate, "fadd", doubleStr);
+        }
+        reg_iter++;
     }
 
     private static void reset() {
