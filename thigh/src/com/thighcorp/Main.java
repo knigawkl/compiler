@@ -15,7 +15,10 @@ public class Main {
                                                       "test-input-print-variable",
 //                                                      "test-int-double-casting",
                                                       "test-addition",
-                                                      "test-subtracting");
+                "test-subtracting",
+                "test-division",
+                "test-division-zero"
+        );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));
             try {

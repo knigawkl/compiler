@@ -156,6 +156,26 @@ public class ThighCustomListener extends ThighBaseListener {
             System.err.printf("substraction type mismatch at line %s%n", ctx.getStart().getLine());
         }
     }
+
+    @Override
+    public void exitDivisionOperation(ThighParser.DivisionOperationContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+
+        if (v1.val.matches("0(([.][0]+)|([.]))?")){
+            System.err.printf("division by 0 at line %s%n", ctx.getStart().getLine());
+            return;
+        }
+
+        if (v1.type == v2.type) {
+            if (v1.type == VarType.INT) {
+                LLVMGenerator.div(v2.val, v1.val, VarType.INT);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.INT));
+            }
+            if (v1.type == VarType.DOUBLE) {
+                LLVMGenerator.div(v2.val, v1.val, VarType.DOUBLE);
+                stack.push(new Value("%"+(LLVMGenerator.reg_iter-1), VarType.DOUBLE));
+            }
         } else {
             System.err.printf("add type mismatch at line %s%n", ctx.getStart().getLine());
         }

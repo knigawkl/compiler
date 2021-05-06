@@ -130,4 +130,14 @@ class LLVMGenerator {
     }
 
 
+    public static void div(String val1, String val2, VarType type) {
+        var divisionTemplate = "%%" + reg_iter + " = %s %s " + val1 + ", " + val2 + "\n";
+        switch (type) {
+            case INT -> main_text += String.format(divisionTemplate, "sdiv", integerStr);
+            case DOUBLE -> main_text += String.format(divisionTemplate, "fdiv", doubleStr);
+        }
+        reg_iter++;
+    }
+
+
 }
