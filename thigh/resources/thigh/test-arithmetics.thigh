@@ -1,0 +1,31 @@
+print "Calculating 1 + 3";
+sum = 1 + 3;
+print sum;
+
+print "Calculating 69 - 9";
+difference = 69 - 9;
+print difference;
+
+xmul = 4 * 4;
+ymul = 4.0 * 4.0;
+zmul = 4.0 * 0.0;
+print "Calculating 4 * 4";
+print xmul;
+print "Calculating 4.0 * 4.0";
+print ymul;
+print "Calculating 4.0 * 0.0";
+print zmul;
+
+xsub = 69 / 13;
+ysub = 20.0 / 3.12;
+print "Calculating 69 / 13";
+print xsub;
+print "Calculating 20.0 / 3.12";
+print ysub;
+
+xmod = 17 % 5;
+print "Calculating 5 % 17";
+print xmod;
+ymod = 17.6 % 5.0;
+print "Calculating 17.6 % 5.0";
+print ymod;

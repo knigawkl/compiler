@@ -1,13 +1,6 @@
 TODO:
-- obejrzeć wykład z 22.03 (o projekcie)
-- rzutowanie typów int i DOUBLE
--
-
-Testy do wykonania przy wprowadzaniu zmian:
-- wyrażenie arytmetyczne z nawiasem na początku/końcu/w środku
-- castowanie INT <-> DOUBLE
-- wypisywanie INT/DOUBLE/STRING
-- wczytywanie INT/DOUBLE/STRING
-- operacje arytmetyczne ADD/SUB/MUL/DIV
-- 
-
+- wczytywyanie zmiennej string
+- nawiasy w wyrażeniach arytmetycznych
+- składane wyrażenia arytmetyczne np. 1+1+1+1...
+- wypisywanie zmiennej string
+- operacje arytmetyczne POW/MOD

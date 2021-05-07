@@ -200,15 +200,33 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
+    public void exitModuloOperation(ThighParser.ModuloOperationContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+        if (v1.type == v2.type) {
+            if (v1.type == VarType.INT) {
+                LLVMGenerator.mod(v1.val, v2.val, VarType.INT);
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT));
+            }
+            if (v1.type == VarType.DOUBLE) {
+                LLVMGenerator.mod(v1.val, v2.val, VarType.DOUBLE);
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE));
+            }
+        } else {
+            System.err.printf("multiplication type mismatch at line %s%n", ctx.getStart().getLine());
+        }
+    }
+
+    @Override
     public void exitCast(ThighParser.CastContext ctx) {
         if (ctx.TODOUBLE() != null){
             Value v = stack.pop();
             LLVMGenerator.castToDouble( v.val );
-            stack.push( new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE) );
+            stack.push( new Value("%"+(LLVMGenerator.register - 1), VarType.DOUBLE) );
         }else if(ctx.TOINT() != null){
             Value v = stack.pop();
             LLVMGenerator.castToInt( v.val );
-            stack.push( new Value("%"+(LLVMGenerator.register -1), VarType.INT) );
+            stack.push( new Value("%"+(LLVMGenerator.register - 1), VarType.INT) );
         }
     }
 

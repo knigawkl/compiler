@@ -22,26 +22,24 @@ function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET
 function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmeticOperation SEMICOLON;
 
-//arithmetic_operation: arithmetic_value
-//                    | arithmetic_operation arithmetic_operator arithmetic_operation
-//                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
-//arithmetic_operation: (arithmetic_value | arithmetic_operator)*;
-arithmeticOperation: additionOperation | subtractionOperation | divisionOperation | multiplicationOperation;
+arithmeticOperation: additionOperation
+                   | subtractionOperation
+                   | divisionOperation
+                   | multiplicationOperation
+                   | moduloOperation;
 
 multiplicationOperation: value | value MULTIPLICATION value;
-
 divisionOperation: value | value DIVISION value;
-
 subtractionOperation: value | value SUBTRACTION value;
-//additionOperation: arithmetic_value | arithmetic_value ADDITION arithmetic_value;
 additionOperation: value | value ADDITION value;
+moduloOperation: value | value MODULO value;
+
 arithmetic_operator: ADDITION
                    | SUBTRACTION
                    | MULTIPLICATION
                    | DIVISION
                    | MODULO
                    | POWER;
-//arithmetic_value: (ID | INT | DOUBLE | toint_cast);
 
 cast: TOINT | TODOUBLE;
 
@@ -76,3 +74,8 @@ BRACE_OPEN: '{';
 BRACE_CLOSE: '}';
 WHITESPACE: [ \t\r\n]+ -> skip;
 COMMENT: '#';
+
+//arithmetic_operation: arithmetic_value
+//                    | arithmetic_operation arithmetic_operator arithmetic_operation
+//                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
+//arithmetic_operation: (arithmetic_value | arithmetic_operator)*;

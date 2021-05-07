@@ -144,6 +144,15 @@ class LLVMGenerator {
         register++;
     }
 
+    public static void mod(String val1, String val2, VarType type) {
+        var moduloTemplate = "%%" + register + " = %s %s " + val2 + ", " + val1 + "\n";
+        switch (type) {
+            case INT -> content += String.format(moduloTemplate, "srem", integerStr);
+            case DOUBLE -> content += String.format(moduloTemplate, "frem", doubleStr);
+        }
+        register++;
+    }
+
     public static void increase(String id, VarType type) {
         int intSize = 4;
         int doubleSize = 8;
@@ -164,16 +173,14 @@ class LLVMGenerator {
     public static void decrease(String id, VarType type) {
         int intSize = 4;
         int doubleSize = 8;
-        var increaseLoadTemplate = "%%" + register + " = load %s, %s* %%" + id + ", align %s\n";
-        register++;
-        var increaseTemplate = "%%" + register + " = %s %s %%" + (register - 1) + ", %s\n" + "store %s %%" + register + ", %s* %%" + id + ", align %s\n";
+        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* %%" + id + ", align %s\n";
         switch (type) {
             case INT -> {
-                content += String.format(increaseLoadTemplate, integerStr, integerStr, intSize);
+                loadVariable(id, VarType.INT);
                 content += String.format(increaseTemplate, "sub nsw", integerStr, 1, integerStr, integerStr, intSize);
             }
             case DOUBLE -> {
-                content += String.format(increaseLoadTemplate, doubleStr, doubleStr, doubleSize);
+                loadVariable(id, VarType.DOUBLE);
                 content += String.format(increaseTemplate, "fsub ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
             }
         }
