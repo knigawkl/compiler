@@ -41,10 +41,16 @@ d = 6.9 (int);
 
 #### Arithmetics
 ```
-sum = 1 + 3;
-difference = 69 - 9;
-product = 4 * 4;
-quotient = 69 / 13;
+isum = 1 + 3;
+idifference = 69 - 9;
+iproduct = 4 * 4;
+iquotient = 69 / 13;
+imodulo = 17 % 5;
+dsum = 1.0 + 3.0;
+ddifference = 69.0 - 9.0;
+dproduct = 4.0 * 4.0;
+dquotient = 69.0 / 13.0;
+dmodulo = 17.0 % 5.0;
 ```
 
 #### Increment/decrement
