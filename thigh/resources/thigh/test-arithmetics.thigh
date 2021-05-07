@@ -24,7 +24,7 @@ print "Calculating 20.0 / 3.12";
 print ysub;
 
 xmod = 17 % 5;
-print "Calculating 5 % 17";
+print "Calculating 17 % 5";
 print xmod;
 ymod = 17.6 % 5.0;
 print "Calculating 17.6 % 5.0";
