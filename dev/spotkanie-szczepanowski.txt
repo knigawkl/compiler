@@ -34,3 +34,10 @@ Komunikat nieprawidłowy token, jak będzie coś w stylu spodziewano się tego, 
 Konkatenacja napisów powinna być możliwa.
 Wewnątrz ifa powinno się dać zrobić wyrażenie, nie tylko if True ale coś większego.
 
+according to Mateusz Muszyński on discord:
+(co do tego, jak zrobic dynamiczne typowanie): Szczepanowski wymaga tylko niejawnego rzutowania 
+i automatycznej detekcji typu przy deklaracji, 
+więc u niego nie trzeba robić "prawdziwego dynamicznego typowania"
+
+todo: rozdzielić na część pierwszą i drugą
+
