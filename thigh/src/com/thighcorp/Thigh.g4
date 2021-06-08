@@ -8,7 +8,8 @@ statement: expression
          | assign_statement
          | increment
          | decrement
-         | comment;
+         | comment
+         |if_statement;
 
 printStatement: PRINT value SEMICOLON #print;
 read_statement: READ type ID SEMICOLON #read;
@@ -46,6 +47,10 @@ cast: TOINT | TODOUBLE;
 value: ID | STRING | INT | DOUBLE | value cast;
 type: 'int' | 'double' | 'string';
 
+if_statement :  'if' BRACKET_OPEN condition BRACKET_CLOSE if_body;
+condition : value COMPARE value;
+if_body: BRACE_OPEN statement BRACE_CLOSE;
+
 PRINT: 'print';
 READ: 'input';
 ASSIGN: '=';
@@ -55,6 +60,8 @@ ID: ('a'..'z'|'A'..'Z')+;
 STRING: '"'( ~('\\'|'"') )*'"';
 INT: '-'?'0'..'9'+;
 DOUBLE: '-'?'0'..'9'+('.''0'..'9'+)?;
+
+COMPARE: '<' | '>' | '=';
 
 TOINT: '(int)';
 TODOUBLE: '(double)';
@@ -74,6 +81,7 @@ BRACE_OPEN: '{';
 BRACE_CLOSE: '}';
 WHITESPACE: [ \t\r\n]+ -> skip;
 COMMENT: '#';
+
 
 //arithmetic_operation: arithmetic_value
 //                    | arithmetic_operation arithmetic_operator arithmetic_operation
