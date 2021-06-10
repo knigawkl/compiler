@@ -16,7 +16,9 @@ public class Main {
                 "test-castingToDouble",
                 "test-castingToInt",
                 "test-variation",
-                "test-arithmetics"
+                "test-arithmetics",
+                // second phase
+                "test-while"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

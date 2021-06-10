@@ -1,6 +1,11 @@
 TODO:
-- wczytywyanie zmiennej string
-- nawiasy w wyrażeniach arytmetycznych
-- składane wyrażenia arytmetyczne np. 1+1+1+1...
-- wypisywanie zmiennej string
-- operacje arytmetyczne POW/MOD
+
+1) must-have
+ -   instrukcja warunkowe, pętla,
+ -   możliwość tworzenia funkcji,
+ -   obsługa zasięgu zmiennych (lokalne i globalne)
+
+2) add-ons
+ -   obsługa struktur (5 pkt)
+ -   obsługa klas (5 pkt)
+ -   dynamiczne typowanie (5 pkt)

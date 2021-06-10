@@ -68,6 +68,39 @@ double y--;
 #"Comments are kinda strange";
 ```
 
+### If statements (WIP)
+```
+if (expression) {
+    #"do sth if expression is true";
+} else {
+    #"do sth if expression is false";
+}
+```
+
+### While loop (WIP)
+```
+while (expression) {
+    #"do sth as long as expression is true";
+}
+```
+
+### Functions (WIP)
+```
+def function_name() {
+    #"do sth";
+}
+```
+
+### Local variables (WIP)
+```
+
+```
+
+### Global variables (WIP)
+```
+
+```
+
 ### compose-validator
 Simplified syntax validator for a subset of docker-compose yaml files.
 

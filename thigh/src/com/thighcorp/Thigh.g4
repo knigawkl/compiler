@@ -2,13 +2,14 @@ grammar Thigh;
 
 program: statement* EOF;
 statement: expression
-         | function_definition
+//         | function_definition
          | printStatement
          | read_statement
          | assign_statement
          | increment
          | decrement
-         | comment;
+         | comment
+         | while_definition;
 
 printStatement: PRINT value SEMICOLON #print;
 read_statement: READ type ID SEMICOLON #read;
@@ -18,9 +19,18 @@ increment: type ID ADDITION ADDITION SEMICOLON;
 decrement: type ID SUBTRACTION SUBTRACTION SEMICOLON;
 comment: COMMENT STRING SEMICOLON;
 
-function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
-function_body: BRACE_OPEN expression* BRACE_CLOSE;
+//function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
+//function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmeticOperation SEMICOLON;
+
+while_definition : while_cond while_body;
+while_cond : WHILE BRACKET_OPEN compare_first compare_sign compare_second BRACKET_CLOSE;
+while_body : BRACE_OPEN printStatement BRACE_CLOSE;
+
+compare_first : ID | INT | DOUBLE;
+compare_second : ID | INT | DOUBLE;
+
+compare_sign : LESS | GREATER | EQUALS;
 
 arithmeticOperation: additionOperation
                    | subtractionOperation
@@ -48,6 +58,7 @@ type: 'int' | 'double' | 'string';
 
 PRINT: 'print';
 READ: 'input';
+WHILE: 'while';
 ASSIGN: '=';
 FUNCTION_DEFINITION: 'def';
 
@@ -73,9 +84,10 @@ BRACKET_CLOSE: ')';
 BRACE_OPEN: '{';
 BRACE_CLOSE: '}';
 WHITESPACE: [ \t\r\n]+ -> skip;
+NEWLINE: ('\r\n' | '\n' | '\r');
 COMMENT: '#';
 
-//arithmetic_operation: arithmetic_value
-//                    | arithmetic_operation arithmetic_operator arithmetic_operation
-//                    | BRACKET_OPEN arithmetic_operation BRACKET_CLOSE;
-//arithmetic_operation: (arithmetic_value | arithmetic_operator)*;
+LESS: '<';
+GREATER: '>';
+EQUALS: '==';
+

@@ -28,11 +28,11 @@ public class ThighCustomListener extends ThighBaseListener {
 
     @Override
     public void exitProgram(ThighParser.ProgramContext ctx) {
-        String intermesiate_representation = LLVMGenerator.generate();
+        String intermediate_representation = LLVMGenerator.generate();
         FileWriter llWriter = null;
         try {
             llWriter = new FileWriter(out_file);
-            llWriter.write(intermesiate_representation);
+            llWriter.write(intermediate_representation);
             llWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,6 +115,9 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitFunction_body(ThighParser.Function_bodyContext ctx) {
         // TODO: 2nd project
     }
+
+//    @Override
+//    public void exitWhi
 
     @Override
     public void exitArithmeticOperation(ThighParser.ArithmeticOperationContext ctx) {
