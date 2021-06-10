@@ -1,18 +1,25 @@
 package com.thighcorp;
 
+import java.util.Stack;
+
 class LLVMGenerator {
 
     private static String header = "";
     private static String content = "";
     private static int string_declaration_iter = 0;
     public static int register = 1;
+    static int br = 0;
+    static Stack<Integer> brStack = new Stack<>();
     private static final String integerStr = "i32";
     private static final String doubleStr = "double";
+    static String fun = "";
+    static int fun_reg = 1;
 
     static String generate() {
         String text = "";
         text += "declare i32 @printf(i8*, ...)\n";
         text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
+        text += "@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n";
         text += header;
         text += "define i32 @main() nounwind{\n";
         text += content;
@@ -26,6 +33,34 @@ class LLVMGenerator {
         switch (type) {
             case INT -> content += String.format(assignmentTemplate, integerStr, integerStr);
             case DOUBLE -> content += String.format(assignmentTemplate, doubleStr, doubleStr);
+        }
+    }
+
+    static void assignInt(String id, String value, boolean main, boolean isGlobal){
+        String globalOrLocal;
+        if(isGlobal){
+            globalOrLocal = "@";
+        }else{
+            globalOrLocal = "%";
+        }
+        if(main){
+            content += "store i32 "+value+", i32* "+ globalOrLocal +id+"\n";
+        }else{
+            fun += "store i32 "+value+", i32* "+globalOrLocal+id+"\n";
+        }
+    }
+
+    static void assignDouble(String id, String value, boolean main, boolean isGlobal){
+        String globalOrLocal;
+        if(isGlobal){
+            globalOrLocal = "@";
+        }else{
+            globalOrLocal = "%";
+        }
+        if(main){
+            content += "store double "+value+", double* "+ globalOrLocal +id+"\n";
+        }else{
+            fun += "store double "+value+", double* "+globalOrLocal+id+"\n";
         }
     }
 
@@ -86,6 +121,133 @@ class LLVMGenerator {
         switch (type) {
             case INT -> content += String.format(declarationTemplate, integerStr);
             case DOUBLE -> content += String.format(declarationTemplate, doubleStr);
+        }
+    }
+
+    static void declareInt(String id, boolean main){
+        // System.out.println("declareInt: Deklaruje zmienna: " + id + " czy globalna: " + main);
+        if(main){
+            header += "@"+id+" = common global i32 0, align 4\n";
+        }else{
+            fun += "%"+id+" = alloca i32\n";
+        }
+    }
+
+    static void declareDouble(String id, boolean main){
+        // System.out.println("declareInt: Deklaruje zmienna: " + id + " czy globalna: " + main);
+        if(main){
+            header += "@"+id+" = common global double 0.000000e+00, align 8\n";
+        }else{
+            fun += "%"+id+" = alloca double\n";
+        }
+    }
+
+    static void declareInt(String id, boolean isInMain, boolean isGlobal){
+        String globalOrLocal;
+        if(isGlobal){
+            globalOrLocal = "@";
+        }else{
+            globalOrLocal = "%";
+        }
+        if(isInMain && isGlobal){
+            header += globalOrLocal+id+" = common global i32 0, align 4\n";
+        }else if(isInMain){
+            content += globalOrLocal+id+" = alloca i32\n";
+        }else{
+            fun += globalOrLocal+id+" = alloca i32\n";
+        }
+    }
+
+    static void declareDouble(String id, boolean main, boolean isGlobal){
+        String globalOrLocal;
+        if(isGlobal){
+            globalOrLocal = "@";
+        }else{
+            globalOrLocal = "%";
+        }
+        if(main == true && isGlobal == true){
+            header += globalOrLocal+id+" = common global double 0.000000e+00, align 8\n";
+        }else if(main == true && isGlobal == false){
+            content += globalOrLocal+id+" = alloca double\n";
+        }else{
+            fun += globalOrLocal+id+" = alloca double\n";
+        }
+    }
+
+    static void scanfInt(String id, VarScope scope, boolean isMain){
+        //content += "%" + register + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.str, i32 0, i32 0), i32* %" + id + ") \n";
+        //register++;
+
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(isMain){
+            content += "%" + register + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.str, i32 0, i32 0), i32* " + varType + id + ") \n";
+            register++;
+        }else{
+            fun += "%" + fun_reg + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.str, i32 0, i32 0), i32* " + varType + id + ") \n";
+            fun_reg++;
+        }
+    }
+
+    static void scanfDouble(String id, VarScope scope, boolean isMain){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(isMain){
+            content += "%" + register + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str1, i32 0, i32 0), double* " + varType + id + ") \n";
+            register++;
+        }else{
+            fun += "%" + fun_reg + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str1, i32 0, i32 0), double* " + varType + id + ") \n";
+            fun_reg++;
+        }
+
+    }
+
+    static void printfInt(String id, boolean main, boolean isGlobal){
+        String varType;
+        if(isGlobal){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%" + register +" = load i32, i32* " + varType +id+"\n";
+            register++;
+            content += "%"+ register +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %" +(register -1)+")\n";
+            register++;
+        }else{
+            fun += "%"+ fun_reg +" = load i32, i32* " + varType +id+"\n";
+            fun_reg++;
+            fun += "%"+ fun_reg +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %" +(fun_reg -1)+")\n";
+            fun_reg++;
+        }
+    }
+
+    static void printfDouble(String id, boolean main, boolean isGlobal){
+        String varType;
+        if(isGlobal){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+
+        if(main){
+            content += "%" + register +" = load double* " + varType +id+"\n";
+            register++;
+            content += "%"+ register +" = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([4 x i8]* @strpd, i32 0, i32 0), double %" +(register -1)+")\n";
+            register++;
+        }else{
+            fun += "%"+ fun_reg +" = load double* " + varType +id+"\n";
+            fun_reg++;
+            fun += "%"+ fun_reg +" = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([4 x i8]* @strpd, i32 0, i32 0), double %" +(fun_reg -1)+")\n";
+            fun_reg++;
         }
     }
 
@@ -192,5 +354,112 @@ class LLVMGenerator {
         content = "";
         string_declaration_iter = 0;
         register = 1;
+    }
+
+    public static void declareWhileCondInt(String id, String value, Comparator c, boolean is_in_main, VarScope scope) {
+        br++;
+        String signType = "";
+        if (c == Comparator.EQUAL) {
+            signType = "eq";
+        }
+        if (c == Comparator.GREATER) {
+            signType = "sgt";
+        }
+        if (c == Comparator.LESS) {
+            signType = "slt";
+        }
+        String varType;
+        if (scope == VarScope.GLOBAL) {
+            varType = "@";
+        } else {
+            varType = "%";
+        }
+        if (is_in_main) {
+            content += "br label %cond" + br + "\n";
+            content += "cond" + br + ":\n";
+
+            content += "%" + register + " = load i32, i32* " + varType + id + "\n";
+            register++;
+
+            content += "%" + register + " = icmp " + signType + " i32 %" + (register - 1) + ", " + value + "\n";
+            register++;
+
+            content += "br i1 %" + (register - 1) + ", label %true" + br + ", label %false" + br + "\n";
+            content += "true" + br + ":\n";
+        } else {
+            fun += "br label %cond" + br + "\n";
+            fun += "cond" + br + ":\n";
+
+            fun += "%" + fun_reg + " = load i32, i32* " + varType + id + "\n";
+            fun_reg++;
+
+            fun += "%" + fun_reg + " = icmp " + signType + " i32 %" + (fun_reg - 1) + ", " + value + "\n";
+            fun_reg++;
+
+            fun += "br i1 %" + (fun_reg - 1) + ", label %true" + br + ", label %false" + br + "\n";
+            fun += "true" + br + ":\n";
+        }
+        brStack.push(br);
+    }
+
+    public static void declareWhileCondDouble(String id, String value, Comparator sign, boolean is_in_main, VarScope scope) {
+        br++;
+        String signType = "";
+        if(sign == Comparator.EQUAL){
+            signType = "oeq";
+        }
+        if(sign == Comparator.GREATER){
+            signType = "ogt";
+        }
+        if(sign == Comparator.LESS){
+            signType = "olt";
+        }
+
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+
+        if(is_in_main){
+            content += "br label %cond"+br+"\n";
+            content += "cond"+br+":\n";
+
+            content += "%"+register+" = load double* "+varType+id+"\n";
+            register++;
+
+            content += "%"+register+" = fcmp " + signType +  " double %"+(register-1)+", " + value + "\n";
+            register++;
+
+            content += "br i1 %"+(register-1)+", label %true"+br+", label %false"+br+"\n";
+            content += "true"+br+":\n";
+        }else{
+            fun += "br label %cond"+br+"\n";
+            fun += "cond"+br+":\n";
+
+            fun += "%"+fun_reg+" = load double* "+varType+id+"\n";
+            fun_reg++;
+
+            fun += "%"+fun_reg+" = fcmp " + signType +  " double %"+(fun_reg-1)+", " + value + "\n";
+            fun_reg++;
+
+            fun += "br i1 %"+(fun_reg-1)+", label %true"+br+", label %false"+br+"\n";
+            fun += "true"+br+":\n";
+
+        }
+        brStack.push(br);
+    }
+
+    public static void endWhile(boolean is_in_main) {
+        int b = brStack.pop();
+        if(is_in_main){
+            content += "br label %cond"+b+"\n";
+            content += "false"+b+":\n";
+        }else{
+            fun += "br label %cond"+b+"\n";
+            fun += "false"+b+":\n";
+        }
+        br++;
     }
 }

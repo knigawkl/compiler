@@ -10,13 +10,13 @@ public class Main {
 
     public static void main(String[] args) {
         var test_filenames = Arrays.asList(
-                "test-print",
-                "test-assign-variable",
-                "test-input-variable",
-                "test-castingToDouble",
-                "test-castingToInt",
-                "test-variation",
-                "test-arithmetics",
+//                "test-print",
+//                "test-assign-variable",
+//                "test-input-variable",
+//                "test-castingToDouble",
+//                "test-castingToInt",
+//                "test-variation",
+//                "test-arithmetics",
                 // second phase
                 "test-while"
         );
