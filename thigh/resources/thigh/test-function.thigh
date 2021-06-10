@@ -1,0 +1,7 @@
+fun int testowa {
+    print "i set to equal 1";
+    i = 1;
+}
+
+#"call testowa";
+

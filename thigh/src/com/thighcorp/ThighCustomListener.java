@@ -3,6 +3,7 @@ package com.thighcorp;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Stack;
 
 enum VarType{INT, DOUBLE, STRING}
@@ -21,6 +22,9 @@ public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, VarType> variables = new HashMap<>();
     HashMap<String, String> strMemory = new HashMap<>();
     Stack<Value> stack = new Stack<>();
+    LinkedList<String> funList = new LinkedList<String>();
+    HashMap<String, VarType> fun_variables = new HashMap<String, VarType>();
+    boolean main = true;
 
     public ThighCustomListener(String ll_file) {
         out_file = ll_file;
@@ -104,21 +108,6 @@ public class ThighCustomListener extends ThighBaseListener {
             tmp = tmp.substring(1, tmp.length()-1);
             strMemory.put(variableName, tmp);
         }
-    }
-
-    @Override
-    public void exitFunction_definition(ThighParser.Function_definitionContext ctx) {
-        // TODO: 2nd project
-    }
-
-    @Override
-    public void exitFunction_body(ThighParser.Function_bodyContext ctx) {
-        // TODO: 2nd project
-    }
-
-    @Override
-    public void exitArithmeticOperation(ThighParser.ArithmeticOperationContext ctx) {
-
     }
 
     @Override
@@ -278,5 +267,42 @@ public class ThighCustomListener extends ThighBaseListener {
             ID = "";
         }
         return ID;
+    }
+
+    @Override
+    public void enterFunction(ThighParser.FunctionContext ctx) {
+        VarType type = null;
+        if (ctx.var_type().t_INT() != null) {
+            type = VarType.INT;
+        }
+        if (ctx.var_type().t_REAL() != null) {
+            type = VarType.DOUBLE;
+        }
+        System.err.printf("tdebug: %s%n", ctx.fname().ID_NAME().getText());
+        String f_name = ctx.fname().ID_NAME().getText();
+        funList.add(f_name);
+        LLVMGenerator.defineFun(f_name, type);
+    }
+
+    @Override
+    public void exitCall(ThighParser.CallContext ctx) {
+        String funName = ctx.ID_NAME().getText();
+        if (funList.contains(funName)) {
+            LLVMGenerator.callFun(funName, main);
+        } else {
+            System.err.printf("there is no function called%s at line %s%n", funName, ctx.getStart().getLine());
+        }
+    }
+
+    @Override
+    public void enterFunct_body(ThighParser.Funct_bodyContext ctx) {
+        main = false;
+    }
+
+    @Override
+    public void exitFunct_body(ThighParser.Funct_bodyContext ctx) {
+        main = true;
+        fun_variables = new HashMap<String, VarType>();
+        LLVMGenerator.closeFun();
     }
 }

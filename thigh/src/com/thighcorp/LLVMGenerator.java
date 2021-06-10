@@ -8,6 +8,9 @@ class LLVMGenerator {
     public static int register = 1;
     private static final String integerStr = "i32";
     private static final String doubleStr = "double";
+    static String fun = "";
+    static String allFuns = "";
+    static int fun_reg = 1;
 
     static String generate() {
         String text = "";
@@ -193,4 +196,27 @@ class LLVMGenerator {
         string_declaration_iter = 0;
         register = 1;
     }
+
+    static void callFun(String funName, boolean main){
+        if(main){
+            content += "  call void @" + funName + "()\n";
+        }else{
+            fun += "  call void @" + funName + "()\n";
+        }
+    }
+
+    static void closeFun(){
+        fun += "  ret void\n" +
+                "}\n";
+
+        // tutaj rzeczy niezwiazane z generowaniem kodu bezposrednio
+        fun_reg = 1;
+        allFuns += LLVMGenerator.fun;
+        fun = "";
+    }
+
+    static void defineFun(String funName, VarType type){
+        fun += "define void @" + funName + "() #0 {\n";
+    }
+
 }
