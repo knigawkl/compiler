@@ -1,0 +1,7 @@
+i = 10;
+
+def test {
+    j = 89;
+}
+
+run test;

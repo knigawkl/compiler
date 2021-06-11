@@ -23,6 +23,7 @@ class LLVMGenerator {
         text += "@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n";
         text += "@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n";
         text += header;
+        text += funs;
         text += "define i32 @main() nounwind{\n";
         text += content;
         text += "ret i32 0 }\n";
