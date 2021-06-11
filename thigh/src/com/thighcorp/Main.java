@@ -11,14 +11,15 @@ public class Main {
     public static void main(String[] args) {
         var test_filenames = Arrays.asList(
 //                "test-print",
-//                "test-assign-variable",
+//                "test-asComparator-variable",
 //                "test-input-variable",
 //                "test-castingToDouble",
 //                "test-castingToInt",
 //                "test-variation",
 //                "test-arithmetics",
                 // second phase
-                "test-while"
+                "test-while",
+                "test-if"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

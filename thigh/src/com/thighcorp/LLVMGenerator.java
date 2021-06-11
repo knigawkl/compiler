@@ -458,6 +458,354 @@ class LLVMGenerator {
         br++;
     }
 
+    static void icmpRealEquallIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load double* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load double* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = fcmp oeq double %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load double* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp oeq double %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+    }
+
+    static void icmpRealMoreIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load double* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load double* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = fcmp ogt double %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load double* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp ogt double %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpRealLessIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load double* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load double* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = fcmp olt double %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load double* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp olt double %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpRealEquall(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load double* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = fcmp oeq double %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp oeq double %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpRealMore(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load double* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = fcmp ogt double %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp ogt double %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpRealLess(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load double* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = fcmp olt double %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load double* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = fcmp olt double %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpIntEquallIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = icmp eq i32 %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp eq i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+    }
+
+    static void icmpIntMoreIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = icmp sgt i32 %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp sgt i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+
+    }
+
+    static void icmpIntLessIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+        String varType_1;
+        String varType_2;
+
+        if(s_1 == VarScope.GLOBAL){
+            varType_1 = "@";
+        }else{
+            varType_1 = "%";
+        }
+
+        if(s_2 == VarScope.GLOBAL){
+            varType_2 = "@";
+        }else{
+            varType_2 = "%";
+        }
+
+        if(main){
+            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            register++;
+            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            register++;
+            content += "%"+register+" = icmp slt i32 %"+(register-1)+", %" +(register-2)+ "\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp slt i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
+            fun_reg++;
+        }
+    }
+
+    static void icmpIntEquall(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load i32* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = icmp eq i32 %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp eq i32 %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+    }
+
+    static void icmpIntMore(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load i32* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = icmp sgt i32 %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp sgt i32 %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+    }
+
+    static void icmpIntLess(String id, String value, VarScope scope, boolean main){
+        String varType;
+        if(scope == VarScope.GLOBAL){
+            varType = "@";
+        }else{
+            varType = "%";
+        }
+        if(main){
+            content += "%"+register+" = load i32* "+varType+id+"\n";
+            register++;
+            content += "%"+register+" = icmp slt i32 %"+(register-1)+", "+value+"\n";
+            register++;
+        }else{
+            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun_reg++;
+            fun += "%"+fun_reg+" = icmp slt i32 %"+(fun_reg-1)+", "+value+"\n";
+            fun_reg++;
+        }
+    }
+
+    static void ifstart(boolean main){
+        br++;
+        if(main){
+            content += "br i1 %"+(register-1)+", label %true"+br+", label %false"+br+"\n";
+            content += "true"+br+":\n";
+        }else{
+            fun += "br i1 %"+(fun_reg-1)+", label %true"+br+", label %false"+br+"\n";
+            fun += "true"+br+":\n";
+        }
+        brStack.push(br);
+    }
+
+    static void ifend(boolean main){
+        int b = brStack.pop();
+        if(main){
+            content += "br label %false"+b+"\n";
+            content += "false"+b+":\n";
+        }else{
+            fun += "br label %false"+b+"\n";
+            fun += "false"+b+":\n";
+        }
+        br++;
+    }
+
     private static String getScopeIdentifier(boolean isInMain) {
         if (isInMain)
             return "@";

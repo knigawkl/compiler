@@ -465,11 +465,6 @@ public class ThighCustomListener extends ThighBaseListener {
     }
 
     @Override
-    public void exitArithmetic_operator(ThighParser.Arithmetic_operatorContext ctx) {
-        // TODO
-    }
-
-    @Override
     public void exitIncrement(ThighParser.IncrementContext ctx) {
         var variableName = ctx.ID().getText();
         switch (ctx.type().getText()) {
@@ -612,6 +607,164 @@ public class ThighCustomListener extends ThighBaseListener {
         blockStack.pop();
         if(blockStack.isEmpty()){
             is_in_block = false;
+        }
+    }
+
+    @Override
+    public void enterIf_body(ThighParser.If_bodyContext ctx) {
+        is_in_block = true;
+        blockStack.push("if");
+        valCounter.push(0);
+        LLVMGenerator.ifstart(is_in_main);
+    }
+
+
+    @Override
+    public void exitIf_body(ThighParser.If_bodyContext ctx) {
+        LLVMGenerator.ifend(is_in_main);
+        Integer numOfVars = valCounter.pop();
+        for(int i = 0; i < numOfVars; i++){
+            blockValues.pop();
+        }
+        blockStack.pop();
+        if (blockStack.isEmpty()){
+            is_in_block = false;
+        }
+    }
+
+    @Override
+    public void exitIf_condition(ThighParser.If_conditionContext ctx) {
+        if (ctx.value(0) == null || ctx.value(1) == null) {
+            printError(ctx.getStart().getLine(), "brak dwóch warunków w pętli");
+        }
+        Comparator sign = Comparator.GREATER;
+        if (ctx.compare_sign().EQUALS() != null) {
+            sign = Comparator.EQUAL;
+        }
+        if (ctx.compare_sign().GREATER() != null) {
+            sign = Comparator.GREATER;
+        }
+        if (ctx.compare_sign().LESS() != null) {
+            sign = Comparator.LESS;
+        }
+        if (ctx.value(0).INT() != null && ctx.value(1).ID() != null) {
+            String ID = ctx.value(1).ID().getText();
+            String INT = ctx.value(0).INT().getText();
+            VarScope scope = checkVarScope(ID);
+            if (scope != VarScope.NONE) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpIntEquall(ID, INT, scope, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpIntMore(ID, INT, scope, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpIntLess(ID, INT, scope, is_in_main);
+                }
+            } else {
+                System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
+            }
+        }
+        if ((ctx.value(0).ID() != null) && (ctx.value(1).INT() != null)) {
+
+            String ID = ctx.value(0).ID().getText();
+            String INT = ctx.value(1).INT().getText();
+            VarScope scope = checkVarScope(ID);
+            if (scope != VarScope.NONE) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpIntEquall(ID, INT, scope, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpIntMore(ID, INT, scope, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpIntLess(ID, INT, scope, is_in_main);
+                }
+            } else {
+                System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
+            }
+        }
+        if ((ctx.value(0).ID() != null) && (ctx.value(1).DOUBLE() != null)) {
+            String ID = ctx.value(0).ID().getText();
+            String REAL = ctx.value(1).DOUBLE().getText();
+            VarScope scope = checkVarScope(ID);
+            if (scope != VarScope.NONE) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpRealMore(ID, REAL, scope, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpRealLess(ID, REAL, scope, is_in_main);
+                }
+            } else {
+                System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
+            }
+        }
+        if ((ctx.value(1).ID() != null) && (ctx.value(0).DOUBLE() != null)) {
+            String ID = ctx.value(1).ID().getText();
+            String REAL = ctx.value(0).DOUBLE().getText();
+            VarScope scope = checkVarScope(ID);
+            if (scope != VarScope.NONE) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpRealMore(ID, REAL, scope, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpRealLess(ID, REAL, scope, is_in_main);
+                }
+            } else {
+                System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
+            }
+        }
+
+        // ZMIENNA dowolny znak ZMIENNA
+        if ((ctx.value(0).ID() != null) && (ctx.value(1).ID() != null)) {
+
+            String ID_1 = ctx.value(0).ID().getText();
+            String ID_2 = ctx.value(1).ID().getText();
+
+            VarType var_1 = checkVarType(ID_1);
+            VarType var_2 = checkVarType(ID_2);
+
+            if (var_1 == null || var_2 == null) {
+                System.err.println("Line " + ctx.getStart().getLine() + ", podana zmienna nie istnieje: " + var_1 + var_2);
+            }
+
+            if (var_1 != var_2) {
+                System.err.println("Line " + ctx.getStart().getLine() + ", porownywane sa liczby z roznymi typami: ");
+            }
+
+
+            VarScope scope_1 = checkVarScope(ID_1);
+            VarScope scope_2 = checkVarScope(ID_2);
+
+            if (var_1 == VarType.DOUBLE) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpRealEquallIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpRealMoreIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpRealLessIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+            }
+            if (var_1 == VarType.INT) {
+                if (sign == Comparator.EQUAL) {
+                    LLVMGenerator.icmpIntEquallIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+                if (sign == Comparator.LESS) {
+                    LLVMGenerator.icmpIntMoreIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+                if (sign == Comparator.GREATER) {
+                    LLVMGenerator.icmpIntLessIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                }
+            }
+
         }
     }
 

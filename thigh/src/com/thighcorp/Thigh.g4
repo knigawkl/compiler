@@ -2,14 +2,14 @@ grammar Thigh;
 
 program: statement* EOF;
 statement: expression
-//         | function_definition
          | printStatement
          | read_statement
          | assign_statement
          | increment
          | decrement
          | comment
-         | while_definition;
+         | while_definition
+         | if_definition;
 
 printStatement: PRINT value SEMICOLON #print;
 read_statement: READ type ID SEMICOLON #read;
@@ -19,15 +19,15 @@ increment: type ID ADDITION ADDITION SEMICOLON;
 decrement: type ID SUBTRACTION SUBTRACTION SEMICOLON;
 comment: COMMENT STRING SEMICOLON;
 
-//function_definition: FUNCTION_DEFINITION ID BRACKET_OPEN ID? (COMMA ID)* BRACKET_CLOSE function_body;
-//function_body: BRACE_OPEN expression* BRACE_CLOSE;
 expression: arithmeticOperation SEMICOLON;
 
 while_definition : while_cond while_body;
 while_cond : WHILE BRACKET_OPEN compare_first compare_sign compare_second BRACKET_CLOSE;
 while_body : BRACE_OPEN statement* BRACE_CLOSE;
-//while_body : BRACE_OPEN while_internals BRACE_CLOSE;
-//while_internals: (printStatement | printStatement decrement | printStatement increment);
+
+if_definition :  if_condition if_body;
+if_condition : IF BRACKET_OPEN value compare_sign value BRACKET_CLOSE;
+if_body : BRACE_OPEN statement* BRACE_CLOSE;
 
 compare_first : ID | INT | DOUBLE;
 compare_second : ID | INT | DOUBLE;
@@ -46,13 +46,6 @@ subtractionOperation: value | value SUBTRACTION value;
 additionOperation: value | value ADDITION value;
 moduloOperation: value | value MODULO value;
 
-arithmetic_operator: ADDITION
-                   | SUBTRACTION
-                   | MULTIPLICATION
-                   | DIVISION
-                   | MODULO
-                   | POWER;
-
 cast: TOINT | TODOUBLE;
 
 value: ID | STRING | INT | DOUBLE | value cast;
@@ -61,6 +54,7 @@ type: 'int' | 'double' | 'string';
 PRINT: 'print';
 READ: 'input';
 WHILE: 'while';
+IF: 'if';
 ASSIGN: '=';
 FUNCTION_DEFINITION: 'def';
 
@@ -92,4 +86,3 @@ COMMENT: '#';
 LESS: '<';
 GREATER: '>';
 EQUALS: '==';
-
