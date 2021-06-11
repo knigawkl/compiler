@@ -473,8 +473,8 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitIncrement(ThighParser.IncrementContext ctx) {
         var variableName = ctx.ID().getText();
         switch (ctx.type().getText()) {
-            case "int" -> LLVMGenerator.increase(variableName, VarType.INT);
-            case "double" -> LLVMGenerator.increase(variableName, VarType.DOUBLE);
+            case "int" -> LLVMGenerator.increase(variableName, VarType.INT, is_in_main);
+            case "double" -> LLVMGenerator.increase(variableName, VarType.DOUBLE, is_in_main);
         }
     }
 
@@ -482,8 +482,8 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitDecrement(ThighParser.DecrementContext ctx) {
         var variableName = ctx.ID().getText();
         switch (ctx.type().getText()) {
-            case "int" -> LLVMGenerator.decrease(variableName, VarType.INT);
-            case "double" -> LLVMGenerator.decrease(variableName, VarType.DOUBLE);
+            case "int" -> LLVMGenerator.decrease(variableName, VarType.INT, is_in_main);
+            case "double" -> LLVMGenerator.decrease(variableName, VarType.DOUBLE, is_in_main);
         }
     }
 
