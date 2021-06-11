@@ -77,7 +77,7 @@ if (expression) {
 }
 ```
 
-### While loop (WIP)
+### While loop
 ```
 while (expression) {
     #"do sth as long as expression is true";
