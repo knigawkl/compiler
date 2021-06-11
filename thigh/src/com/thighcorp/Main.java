@@ -19,7 +19,9 @@ public class Main {
 //                "test-arithmetics",
                 // second phase
                 "test-while",
-                "test-if"
+                "test-if-equals",
+                "test-if-greater",
+                "test-if-less"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

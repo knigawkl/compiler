@@ -68,13 +68,26 @@ double y--;
 #"Comments are kinda strange";
 ```
 
-### If statements (WIP)
+### If statements
+
+Template
 ```
 if (expression) {
     #"do sth if expression is true";
 } else {
     #"do sth if expression is false";
 }
+```
+Example
+```
+i = 5;
+if (i == 5) {
+    print i;
+}
+```
+Running the above code snippet would result in printing this to the console
+```
+5
 ```
 
 ### While loop
