@@ -639,16 +639,16 @@ class LLVMGenerator {
         }
 
         if(main){
-            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            content += "%"+register+" = load i32, i32* " + varType_1 + id_1 + "\n";
             register++;
-            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            content += "%"+register+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             register++;
             content += "%"+register+" = icmp eq i32 %"+(register-1)+", %" +(register-2)+ "\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun += "%"+fun_reg+" = load i32, i32* " + varType_1 + id_1 + "\n";
             fun_reg++;
-            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp eq i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
             fun_reg++;
@@ -672,16 +672,16 @@ class LLVMGenerator {
         }
 
         if(main){
-            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            content += "%"+register+" = load i32, i32* " + varType_1 + id_1 + "\n";
             register++;
-            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            content += "%"+register+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             register++;
             content += "%"+register+" = icmp sgt i32 %"+(register-1)+", %" +(register-2)+ "\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun += "%"+fun_reg+" = load i32, i32* " + varType_1 + id_1 + "\n";
             fun_reg++;
-            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp sgt i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
             fun_reg++;
@@ -706,16 +706,16 @@ class LLVMGenerator {
         }
 
         if(main){
-            content += "%"+register+" = load i32* " + varType_1 + id_1 + "\n";
+            content += "%"+register+" = load i32, i32* " + varType_1 + id_1 + "\n";
             register++;
-            content += "%"+register+" = load i32* "+ varType_2 + id_2 +"\n";
+            content += "%"+register+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             register++;
             content += "%"+register+" = icmp slt i32 %"+(register-1)+", %" +(register-2)+ "\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* " + varType_1 + id_1 + "\n";
+            fun += "%"+fun_reg+" = load i32, i32* " + varType_1 + id_1 + "\n";
             fun_reg++;
-            fun += "%"+fun_reg+" = load i32* "+ varType_2 + id_2 +"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+ varType_2 + id_2 +"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp slt i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
             fun_reg++;
@@ -730,12 +730,12 @@ class LLVMGenerator {
             varType = "%";
         }
         if(main){
-            content += "%"+register+" = load i32* "+varType+id+"\n";
+            content += "%"+register+" = load i32, i32* "+varType+id+"\n";
             register++;
             content += "%"+register+" = icmp eq i32 %"+(register-1)+", "+value+"\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+varType+id+"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp eq i32 %"+(fun_reg-1)+", "+value+"\n";
             fun_reg++;
@@ -750,12 +750,12 @@ class LLVMGenerator {
             varType = "%";
         }
         if(main){
-            content += "%"+register+" = load i32* "+varType+id+"\n";
+            content += "%"+register+" = load i32, i32* "+varType+id+"\n";
             register++;
             content += "%"+register+" = icmp sgt i32 %"+(register-1)+", "+value+"\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+varType+id+"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp sgt i32 %"+(fun_reg-1)+", "+value+"\n";
             fun_reg++;
@@ -770,12 +770,12 @@ class LLVMGenerator {
             varType = "%";
         }
         if(main){
-            content += "%"+register+" = load i32* "+varType+id+"\n";
+            content += "%"+register+" = load i32, i32* "+varType+id+"\n";
             register++;
             content += "%"+register+" = icmp slt i32 %"+(register-1)+", "+value+"\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32* "+varType+id+"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+varType+id+"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp slt i32 %"+(fun_reg-1)+", "+value+"\n";
             fun_reg++;
