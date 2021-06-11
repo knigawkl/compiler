@@ -3,6 +3,7 @@ package com.thighcorp;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
 
@@ -34,6 +35,7 @@ public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, VarType> variables = new HashMap<>();
     HashMap<String, VarType> global_variables = new HashMap<>();
     HashMap<String, VarType> fun_variables = new HashMap<>();
+    LinkedList<String> funList = new LinkedList<>();
     Stack<Value> stack = new Stack<>();
 
     boolean isInMain = true;
@@ -728,7 +730,6 @@ public class ThighCustomListener extends ThighBaseListener {
             }
         }
 
-        // ZMIENNA dowolny znak ZMIENNA
         if ((ctx.value(0).ID() != null) && (ctx.value(1).ID() != null)) {
 
             String ID_1 = ctx.value(0).ID().getText();
@@ -773,6 +774,47 @@ public class ThighCustomListener extends ThighBaseListener {
             }
 
         }
+    }
+
+    @Override
+    public void exitRun_function(ThighParser.Run_functionContext ctx) {
+        String funName = ctx.ID().getText();
+        if (funList.contains(funName)) {
+            LLVMGenerator.callFun(funName, isInMain);
+        } else {
+            printError(ctx.getStart().getLine(), "No such function: " + funName);
+        }
+    }
+
+    @Override
+    public void enterFunction(ThighParser.FunctionContext ctx) {
+//        VarType type = null;
+//        if (ctx.var_type().t_INT() != null) {
+//            type = VarType.INT;
+//        }
+//        if (ctx. .t_REAL() != null) {
+//            type = VarType.DOUBLE;
+//        }
+//        if (ctx.var_type().t_VOID() != null) {
+//            type = VarType.UNKNOWN;
+//        }
+        VarType type = VarType.UNKNOWN;
+        String f_name = ctx.fname().ID().getText();
+        funList.add(f_name);
+        LLVMGenerator.defineFun(f_name, type);
+    }
+
+
+    @Override
+    public void enterFunct_body(ThighParser.Funct_bodyContext ctx) {
+        isInMain = false;
+    }
+
+    @Override
+    public void exitFunct_body(ThighParser.Funct_bodyContext ctx) {
+        isInMain = true;
+        fun_variables = new HashMap<>();
+        LLVMGenerator.closeFun();
     }
 
     private VarType checkVarType(String ID) {

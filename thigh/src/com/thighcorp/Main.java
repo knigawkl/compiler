@@ -21,7 +21,8 @@ public class Main {
                 "test-while",
                 "test-if-equals",
                 "test-if-greater",
-                "test-if-less"
+                "test-if-less",
+                "test-function"
         );
         test_filenames.forEach(filename -> {
             Thigh t = new Thigh(String.format(thigh_dir, filename), String.format(ll_dir, filename));

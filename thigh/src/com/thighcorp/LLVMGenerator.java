@@ -13,6 +13,7 @@ class LLVMGenerator {
     private static final String integerStr = "i32";
     private static final String doubleStr = "double";
     static String fun = "";
+    static String funs = "";
     static int fun_reg = 1;
 
     static String generate() {
@@ -805,6 +806,26 @@ class LLVMGenerator {
             fun += "false"+b+":\n";
         }
         br++;
+    }
+
+    static void callFun(String funName, boolean main){
+        if(main){
+            content += "  call void @" + funName + "()\n";
+        }else{
+            fun += "  call void @" + funName + "()\n";
+        }
+    }
+
+    static void closeFun(){
+        fun += "  ret void\n" +
+                "}\n";
+        fun_reg = 1;
+        funs += LLVMGenerator.fun;
+        fun = "";
+    }
+
+    static void defineFun(String funName, VarType type){
+        fun += "define void @" + funName + "() #0 {\n";
     }
 
     private static String getScopeIdentifier(boolean isInMain) {

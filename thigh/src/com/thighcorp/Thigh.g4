@@ -9,7 +9,9 @@ statement: expression
          | decrement
          | comment
          | while_definition
-         | if_definition;
+         | if_definition
+         | function
+         | run_function;
 
 printStatement: PRINT value SEMICOLON #print;
 read_statement: READ type ID SEMICOLON #read;
@@ -21,18 +23,22 @@ comment: COMMENT STRING SEMICOLON;
 
 expression: arithmeticOperation SEMICOLON;
 
-while_definition : while_cond while_body;
-while_cond : WHILE BRACKET_OPEN compare_first compare_sign compare_second BRACKET_CLOSE;
-while_body : BRACE_OPEN statement* BRACE_CLOSE;
+while_definition: while_cond while_body;
+while_cond: WHILE BRACKET_OPEN compare_first compare_sign compare_second BRACKET_CLOSE;
+while_body: BRACE_OPEN statement* BRACE_CLOSE;
 
-if_definition :  if_condition if_body;
-if_condition : IF BRACKET_OPEN value compare_sign value BRACKET_CLOSE;
-if_body : BRACE_OPEN statement* BRACE_CLOSE;
+if_definition:  if_condition if_body;
+if_condition: IF BRACKET_OPEN value compare_sign value BRACKET_CLOSE;
+if_body: BRACE_OPEN statement* BRACE_CLOSE;
 
-compare_first : ID | INT | DOUBLE;
-compare_second : ID | INT | DOUBLE;
+function: DEF ID funct_body;
+funct_body: BRACE_OPEN statement* BRACE_CLOSE;
+run_function: RUN ID SEMICOLON;
 
-compare_sign : LESS | GREATER | EQUALS;
+compare_first: ID | INT | DOUBLE;
+compare_second: ID | INT | DOUBLE;
+
+compare_sign: LESS | GREATER | EQUALS;
 
 arithmeticOperation: additionOperation
                    | subtractionOperation
@@ -55,8 +61,9 @@ PRINT: 'print';
 READ: 'input';
 WHILE: 'while';
 IF: 'if';
+DEF: 'def';
+RUN: 'run';
 ASSIGN: '=';
-FUNCTION_DEFINITION: 'def';
 
 ID: ('a'..'z'|'A'..'Z')+;
 STRING: '"'( ~('\\'|'"') )*'"';
@@ -80,7 +87,6 @@ BRACKET_CLOSE: ')';
 BRACE_OPEN: '{';
 BRACE_CLOSE: '}';
 WHITESPACE: [ \t\r\n]+ -> skip;
-NEWLINE: ('\r\n' | '\n' | '\r');
 COMMENT: '#';
 
 LESS: '<';
