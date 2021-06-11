@@ -10,8 +10,8 @@ public class Main {
 
     public static void main(String[] args) {
         var test_filenames = Arrays.asList(
-//                "test-print",
-//                "test-asComparator-variable",
+                "test-print",
+                "test-assign-variable",
 //                "test-input-variable",
 //                "test-castingToDouble",
 //                "test-castingToInt",

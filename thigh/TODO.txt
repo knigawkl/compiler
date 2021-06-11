@@ -1,7 +1,6 @@
 TODO:
 
 1) must-have
- -   instrukcja warunkowe, pętla,
  -   możliwość tworzenia funkcji,
  -   obsługa zasięgu zmiennych (lokalne i globalne)
 

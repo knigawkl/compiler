@@ -20,6 +20,7 @@ class LLVMGenerator {
         text += "declare i32 @printf(i8*, ...)\n";
         text += "declare i32 @__isoc99_scanf(i8*, ...)\n";
         text += "@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n";
+        text += "@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n";
         text += header;
         text += "define i32 @main() nounwind{\n";
         text += content;
@@ -79,14 +80,14 @@ class LLVMGenerator {
 //        }
 //    }
 
-//    static void printString(String text) {
-//        int str_len = text.length();
-//        String str_type = "[" + (str_len+2) + " x i8]";
-//        header += "@str" + string_declaration_iter + " = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
-//        content += "%"+ register +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + string_declaration_iter + ", i32 0, i32 0))\n";
-//        string_declaration_iter++;
-//        register++;
-//    }
+    static void printString(String text) {
+        int str_len = text.length();
+        String str_type = "[" + (str_len+2) + " x i8]";
+        header += "@str" + string_declaration_iter + " = constant" + str_type + " c\"" + text + "\\0A\\00\"\n";
+        content += "%"+ register +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( " + str_type + ", " + str_type + "* @str" + string_declaration_iter + ", i32 0, i32 0))\n";
+        string_declaration_iter++;
+        register++;
+    }
 
 //    static void inputVariable(String id, VarType type) {
 //        var headerTemplate = "@str" + string_declaration_iter + " = constant %s";
@@ -196,10 +197,10 @@ class LLVMGenerator {
             varType = "%";
         }
         if(isMain){
-            content += "%" + register + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str1, i32 0, i32 0), double* " + varType + id + ") \n";
+            content += "%" + register + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str1, i32 0, i32 0), double, double* " + varType + id + ") \n";
             register++;
         }else{
-            fun += "%" + fun_reg + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str1, i32 0, i32 0), double* " + varType + id + ") \n";
+            fun += "%" + fun_reg + " = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str1, i32 0, i32 0), double, double* " + varType + id + ") \n";
             fun_reg++;
         }
 
@@ -234,14 +235,14 @@ class LLVMGenerator {
         }
 
         if(main){
-            content += "%" + register +" = load double* " + varType +id+"\n";
+            content += "%" + register +" = load double, double* " + varType +id+"\n";
             register++;
-            content += "%"+ register +" = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([4 x i8]* @strpd, i32 0, i32 0), double %" +(register -1)+")\n";
+            content += "%"+ register +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double %" +(register -1)+")\n";
             register++;
         }else{
-            fun += "%"+ fun_reg +" = load double* " + varType +id+"\n";
+            fun += "%"+ fun_reg +" = load double, double* " + varType +id+"\n";
             fun_reg++;
-            fun += "%"+ fun_reg +" = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([4 x i8]* @strpd, i32 0, i32 0), double %" +(fun_reg -1)+")\n";
+            fun += "%"+ fun_reg +" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double %" +(fun_reg -1)+")\n";
             fun_reg++;
         }
     }

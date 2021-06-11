@@ -82,9 +82,9 @@ public class ThighCustomListener extends ThighBaseListener {
         String ID = getVariableName(ctx);
         VarScope varScope = checkVarScope(ID);
 
-        if (varScope == VarScope.NONE) {
-            printError(ctx.getStart().getLine(), "zmienna ta nie jest zadeklarowana: " + ID);
-        }
+//        if (varScope == VarScope.NONE) {
+//            printError(ctx.getStart().getLine(), "zmienna ta nie jest zadeklarowana: " + ID);
+//        }
         VarType varType = checkVarType(ID);
         if (varScope == VarScope.LOCAL) {
             if (varType == VarType.INT) {
@@ -110,6 +110,13 @@ public class ThighCustomListener extends ThighBaseListener {
             if (varType == VarType.DOUBLE) {
                 LLVMGenerator.printfDouble(v.declaredName, is_in_main, false);
             }
+        } else if (ctx.value().INT() != null) {
+            LLVMGenerator.printString(ctx.value().INT().getText());
+        } else if (ctx.value().DOUBLE() != null) {
+            LLVMGenerator.printString(ctx.value().DOUBLE().getText());
+        } else if (ctx.value().STRING() != null) {
+            String str = ctx.value().STRING().getText();
+            LLVMGenerator.printString(str.substring(1, str.length()-1));
         }
     }
 

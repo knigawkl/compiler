@@ -131,6 +131,37 @@ def function_name() {
 
 ```
 
+### Pseudo dynamic typing 
+
+Example 1
+```
+# "printing int value";
+print 10;
+# "printing double value";
+print 10.11;
+# "printing string value";
+print "string works as well";
+```
+This will result in printing
+```
+10
+10.11
+string works as well
+```
+
+Example 2
+```
+intVar = 10;
+doubleVar = 10.10;
+print intVar;
+print doubleVar;
+```
+And this will result in
+```
+10
+10.100000
+```
+
 ### compose-validator
 Simplified syntax validator for a subset of docker-compose yaml files.
 
