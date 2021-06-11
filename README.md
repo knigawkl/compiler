@@ -121,14 +121,12 @@ def function_name() {
 }
 ```
 
-### Local variables (WIP)
+### Local and global variables
 ```
-
-```
-
-### Global variables (WIP)
-```
-
+i = 10; #"global";
+def function_name() {
+    j = 123; #"local";
+}
 ```
 
 ### Pseudo dynamic typing 
