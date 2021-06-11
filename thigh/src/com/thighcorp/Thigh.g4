@@ -25,8 +25,9 @@ expression: arithmeticOperation SEMICOLON;
 
 while_definition : while_cond while_body;
 while_cond : WHILE BRACKET_OPEN compare_first compare_sign compare_second BRACKET_CLOSE;
-while_body : BRACE_OPEN while_internals BRACE_CLOSE;
-while_internals: (printStatement | printStatement decrement | printStatement increment);
+while_body : BRACE_OPEN statement* BRACE_CLOSE;
+//while_body : BRACE_OPEN while_internals BRACE_CLOSE;
+//while_internals: (printStatement | printStatement decrement | printStatement increment);
 
 compare_first : ID | INT | DOUBLE;
 compare_second : ID | INT | DOUBLE;

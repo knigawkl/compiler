@@ -84,6 +84,23 @@ while (expression) {
 }
 ```
 
+Example
+```
+i = 5;
+while (i>1) {
+    print i;
+    int i--;
+}
+```
+Running the above code snippet would result in printing this to the console
+```
+5
+4
+3
+2
+```
+
+
 ### Functions (WIP)
 ```
 def function_name() {
