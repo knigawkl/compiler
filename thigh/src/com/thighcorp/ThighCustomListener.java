@@ -36,7 +36,7 @@ public class ThighCustomListener extends ThighBaseListener {
     HashMap<String, VarType> fun_variables = new HashMap<>();
     Stack<Value> stack = new Stack<>();
 
-    boolean is_in_main = true;
+    boolean isInMain = true;
     boolean is_in_block = false;
 
     Stack<String> blockStack = new Stack<>();
@@ -88,27 +88,27 @@ public class ThighCustomListener extends ThighBaseListener {
         VarType varType = checkVarType(ID);
         if (varScope == VarScope.LOCAL) {
             if (varType == VarType.INT) {
-                LLVMGenerator.printfInt(ID, is_in_main, false);
+                LLVMGenerator.printfInt(ID, isInMain, false);
             }
             if (varType == VarType.DOUBLE) {
-                LLVMGenerator.printfDouble(ID, is_in_main, false);
+                LLVMGenerator.printfDouble(ID, isInMain, false);
             }
         }
         if (varScope == VarScope.GLOBAL) {
             if (varType == VarType.INT) {
-                LLVMGenerator.printfInt(ID, is_in_main, true);
+                LLVMGenerator.printfInt(ID, isInMain, true);
             }
             if (varType == VarType.DOUBLE) {
-                LLVMGenerator.printfDouble(ID, is_in_main, true);
+                LLVMGenerator.printfDouble(ID, isInMain, true);
             }
         }
         if (varScope == VarScope.BLOCK) {
             Value v = getValueFromBlock(ID);
             if (varType == VarType.INT) {
-                LLVMGenerator.printfInt(v.declaredName, is_in_main, false);
+                LLVMGenerator.printfInt(v.declaredName, isInMain, false);
             }
             if (varType == VarType.DOUBLE) {
-                LLVMGenerator.printfDouble(v.declaredName, is_in_main, false);
+                LLVMGenerator.printfDouble(v.declaredName, isInMain, false);
             }
         } else if (ctx.value().INT() != null) {
             LLVMGenerator.printString(ctx.value().INT().getText());
@@ -166,10 +166,10 @@ public class ThighCustomListener extends ThighBaseListener {
                 v.declaredName = v.val + randomInt;
                 ID = v.declaredName;
                 if(type == VarType.INT){
-                    LLVMGenerator.declareInt(v.declaredName, is_in_main, false);
+                    LLVMGenerator.declareInt(v.declaredName, isInMain, false);
                 }
                 if(type == VarType.DOUBLE){
-                    LLVMGenerator.declareDouble(v.declaredName, is_in_main, false);
+                    LLVMGenerator.declareDouble(v.declaredName, isInMain, false);
                 }
                 blockValues.push(v);
                 varScope = VarScope.BLOCK;
@@ -191,56 +191,56 @@ public class ThighCustomListener extends ThighBaseListener {
                 ID = v.declaredName;
             }
             if (ctx.type().getText().equals("double")){
-                LLVMGenerator.scanfDouble(ID, varScope, is_in_main);
+                LLVMGenerator.scanfDouble(ID, varScope, isInMain);
             }
             if(ctx.type().getText().equals("int")){
-                LLVMGenerator.scanfInt(ID, varScope, is_in_main);
+                LLVMGenerator.scanfInt(ID, varScope, isInMain);
             }
         }else{
             if (ctx.type().getText().equals("int")) {
                 if (checkVarScope(ID) == VarScope.NONE) {
-                    if (is_in_main) {
+                    if (isInMain) {
                         varScope = VarScope.GLOBAL;
                     } else {
                         varScope = VarScope.LOCAL;
                     }
                     variables.put(ID, VarType.INT);
-                    if (is_in_main) {
+                    if (isInMain) {
                         global_variables.put(ID, VarType.INT);
                     } else {
                         fun_variables.put(ID, VarType.INT);
                     }
-                    LLVMGenerator.declareInt(ID, is_in_main);
+                    LLVMGenerator.declareInt(ID, isInMain);
                 } else {
                     varScope = checkVarScope(ID);
                     if (checkVarType(ID) != VarType.INT) {
                         System.err.println("variable has a different type ");
                     }
                 }
-                LLVMGenerator.scanfInt(ID, varScope, is_in_main);
+                LLVMGenerator.scanfInt(ID, varScope, isInMain);
             }
 
             if (ctx.type().getText().equals("double")) {
                 if (checkVarScope(ID) == VarScope.NONE) {
-                    if (is_in_main) {
+                    if (isInMain) {
                         varScope = VarScope.GLOBAL;
                     } else {
                         varScope = VarScope.LOCAL;
                     }
                     variables.put(ID, VarType.DOUBLE);
-                    if (is_in_main) {
+                    if (isInMain) {
                         global_variables.put(ID, VarType.DOUBLE);
                     } else {
                         fun_variables.put(ID, VarType.DOUBLE);
                     }
-                    LLVMGenerator.declareDouble(ID, is_in_main);
+                    LLVMGenerator.declareDouble(ID, isInMain);
                 } else {
                     varScope = checkVarScope(ID);
                     if (checkVarType(ID) != VarType.DOUBLE) {
                         System.err.println("variable has a different type ");
                     }
                 }
-                LLVMGenerator.scanfDouble(ID, varScope, is_in_main);
+                LLVMGenerator.scanfDouble(ID, varScope, isInMain);
             }
         }
     }
@@ -280,7 +280,7 @@ public class ThighCustomListener extends ThighBaseListener {
                     int randomInt = randomGenerator.nextInt(1000000);
                     v.name = ID;
                     v.declaredName = v.name + randomInt;
-                    LLVMGenerator.declareInt(v.declaredName, is_in_main, false);
+                    LLVMGenerator.declareInt(v.declaredName, isInMain, false);
                     blockValues.push(v);
                 } else {
                     if (checkVarType(ID) != VarType.INT) {
@@ -293,7 +293,7 @@ public class ThighCustomListener extends ThighBaseListener {
                         v.declaredName = ID;
                     }
                 }
-                LLVMGenerator.assignInt(v.declaredName, v.val, is_in_main, false);
+                LLVMGenerator.assignInt(v.declaredName, v.val, isInMain, false);
             }
             if(v.type == VarType.DOUBLE){
                 if (checkVarScope(ID) == VarScope.NONE) {
@@ -304,7 +304,7 @@ public class ThighCustomListener extends ThighBaseListener {
                     int randomInt = randomGenerator.nextInt(1000000);
                     v.name = ID;
                     v.declaredName = v.name + randomInt;
-                    LLVMGenerator.declareDouble(v.declaredName, is_in_main, false);
+                    LLVMGenerator.declareDouble(v.declaredName, isInMain, false);
                     blockValues.push(v);
                 } else {
                     if (checkVarType(ID) != VarType.DOUBLE) {
@@ -317,12 +317,12 @@ public class ThighCustomListener extends ThighBaseListener {
                         v.declaredName = ID;
                     }
                 }
-                LLVMGenerator.assignDouble(v.declaredName, v.val, is_in_main, false);
+                LLVMGenerator.assignDouble(v.declaredName, v.val, isInMain, false);
             }
         }else {
             if (v.type == VarType.INT) {
                 if (checkVarScope(ID) == VarScope.NONE) {
-                    LLVMGenerator.declareInt(ID, is_in_main);
+                    LLVMGenerator.declareInt(ID, isInMain);
                 } else {
                     if (checkVarType(ID) != VarType.INT) {
                         printError(ctx.getStart().getLine(), ID + " : przedtem zmienna byla innego typu.");
@@ -335,11 +335,11 @@ public class ThighCustomListener extends ThighBaseListener {
                 }
                 boolean isGlobal;
                 isGlobal = checkVarScope(ID) == VarScope.GLOBAL;
-                LLVMGenerator.assignInt(ID, v.val, is_in_main, isGlobal);
+                LLVMGenerator.assignInt(ID, v.val, isInMain, isGlobal);
             }
             if(v.type == VarType.DOUBLE){
                 if (checkVarScope(ID) == VarScope.NONE) {
-                    LLVMGenerator.declareDouble(ID, is_in_main);
+                    LLVMGenerator.declareDouble(ID, isInMain);
                 } else {
                     if (checkVarType(ID) != VarType.DOUBLE) {
                         printError(ctx.getStart().getLine(), ID + " : przedtem zmienna byla innego typu.");
@@ -352,7 +352,7 @@ public class ThighCustomListener extends ThighBaseListener {
                 }
                 boolean isGlobal;
                 isGlobal = checkVarScope(ID) == VarScope.GLOBAL;
-                LLVMGenerator.assignDouble(ID, v.val, is_in_main, isGlobal);
+                LLVMGenerator.assignDouble(ID, v.val, isInMain, isGlobal);
             }
         }
     }
@@ -369,11 +369,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.add(v1.val, v2.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, isInMain));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.add(v1.val, v2.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, isInMain));
             }
         } else {
             System.err.printf("add type mismatch at line %s%n", ctx.getStart().getLine());
@@ -387,11 +387,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.sub(v2.val, v1.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, isInMain));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.sub(v2.val, v1.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, isInMain));
             }
         } else {
             System.err.printf("substraction type mismatch at line %s%n", ctx.getStart().getLine());
@@ -411,11 +411,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.div(v2.val, v1.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, isInMain));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.div(v2.val, v1.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, isInMain));
             }
         } else {
             System.err.printf("division type mismatch at line %s%n", ctx.getStart().getLine());
@@ -429,11 +429,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.mul(v1.val, v2.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, isInMain));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.mul(v1.val, v2.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, isInMain));
             }
         } else {
             System.err.printf("multiplication type mismatch at line %s%n", ctx.getStart().getLine());
@@ -447,11 +447,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (v1.type == v2.type) {
             if (v1.type == VarType.INT) {
                 LLVMGenerator.mod(v1.val, v2.val, VarType.INT);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.INT, isInMain));
             }
             if (v1.type == VarType.DOUBLE) {
                 LLVMGenerator.mod(v1.val, v2.val, VarType.DOUBLE);
-                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, is_in_main));
+                stack.push(new Value("%"+(LLVMGenerator.register -1), VarType.DOUBLE, isInMain));
             }
         } else {
             System.err.printf("multiplication type mismatch at line %s%n", ctx.getStart().getLine());
@@ -463,11 +463,11 @@ public class ThighCustomListener extends ThighBaseListener {
         if (ctx.TODOUBLE() != null){
             Value v = stack.pop();
             LLVMGenerator.castToDouble( v.val );
-            stack.push(new Value("%"+(LLVMGenerator.register - 1), VarType.DOUBLE, is_in_main));
+            stack.push(new Value("%"+(LLVMGenerator.register - 1), VarType.DOUBLE, isInMain));
         }else if(ctx.TOINT() != null){
             Value v = stack.pop();
             LLVMGenerator.castToInt( v.val );
-            stack.push(new Value("%"+(LLVMGenerator.register - 1), VarType.INT, is_in_main));
+            stack.push(new Value("%"+(LLVMGenerator.register - 1), VarType.INT, isInMain));
         }
     }
 
@@ -475,8 +475,8 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitIncrement(ThighParser.IncrementContext ctx) {
         var variableName = ctx.ID().getText();
         switch (ctx.type().getText()) {
-            case "int" -> LLVMGenerator.increase(variableName, VarType.INT, is_in_main);
-            case "double" -> LLVMGenerator.increase(variableName, VarType.DOUBLE, is_in_main);
+            case "int" -> LLVMGenerator.increase(variableName, VarType.INT, isInMain);
+            case "double" -> LLVMGenerator.increase(variableName, VarType.DOUBLE, isInMain);
         }
     }
 
@@ -484,17 +484,17 @@ public class ThighCustomListener extends ThighBaseListener {
     public void exitDecrement(ThighParser.DecrementContext ctx) {
         var variableName = ctx.ID().getText();
         switch (ctx.type().getText()) {
-            case "int" -> LLVMGenerator.decrease(variableName, VarType.INT, is_in_main);
-            case "double" -> LLVMGenerator.decrease(variableName, VarType.DOUBLE, is_in_main);
+            case "int" -> LLVMGenerator.decrease(variableName, VarType.INT, isInMain);
+            case "double" -> LLVMGenerator.decrease(variableName, VarType.DOUBLE, isInMain);
         }
     }
 
     @Override
     public void exitValue(ThighParser.ValueContext ctx) {
         if (ctx.INT() != null) {
-            stack.push(new Value(ctx.INT().getText(), VarType.INT, is_in_main));
+            stack.push(new Value(ctx.INT().getText(), VarType.INT, isInMain));
         } else if (ctx.DOUBLE() != null) {
-            stack.push(new Value(ctx.DOUBLE().getText(), VarType.DOUBLE, is_in_main));
+            stack.push(new Value(ctx.DOUBLE().getText(), VarType.DOUBLE, isInMain));
         } else if (ctx.STRING() != null) {
             String str = ctx.STRING().getText();
             stack.push(new Value(str.substring(1, str.length()-1), VarType.STRING));
@@ -541,7 +541,7 @@ public class ThighCustomListener extends ThighBaseListener {
             if (ctx.compare_sign().LESS() != null) {
                 sign = Comparator.LESS;
             }
-            LLVMGenerator.declareWhileCondInt(id, value, sign, is_in_main, checkVarScope(id));
+            LLVMGenerator.declareWhileCondInt(id, value, sign, isInMain, checkVarScope(id));
         }
 
         if (ctx.compare_first().ID() != null && ctx.compare_second().DOUBLE() != null) {
@@ -561,7 +561,7 @@ public class ThighCustomListener extends ThighBaseListener {
             if (ctx.compare_sign().LESS() != null) {
                 sign = Comparator.LESS;
             }
-            LLVMGenerator.declareWhileCondDouble(id, value, sign, is_in_main, checkVarScope(id));
+            LLVMGenerator.declareWhileCondDouble(id, value, sign, isInMain, checkVarScope(id));
         }
         if (ctx.compare_second().ID() != null && ctx.compare_first().INT() != null) {
             String id = ctx.compare_second().ID().getText();
@@ -580,7 +580,7 @@ public class ThighCustomListener extends ThighBaseListener {
             if (ctx.compare_sign().LESS() != null) {
                 sign = Comparator.GREATER;
             }
-            LLVMGenerator.declareWhileCondInt(id, value, sign, is_in_main, checkVarScope(id));
+            LLVMGenerator.declareWhileCondInt(id, value, sign, isInMain, checkVarScope(id));
         }
 
         if (ctx.compare_second().ID() != null && ctx.compare_first().DOUBLE() != null) {
@@ -600,13 +600,13 @@ public class ThighCustomListener extends ThighBaseListener {
             if (ctx.compare_sign().LESS() != null) {
                 sign = Comparator.GREATER;
             }
-            LLVMGenerator.declareWhileCondDouble(id, value, sign, is_in_main, checkVarScope(id));
+            LLVMGenerator.declareWhileCondDouble(id, value, sign, isInMain, checkVarScope(id));
         }
     }
 
     @Override
     public void exitWhile_body(ThighParser.While_bodyContext ctx) {
-        LLVMGenerator.endWhile(is_in_main);
+        LLVMGenerator.endWhile(isInMain);
         Integer numOfVars = valCounter.pop();
         for(int i = 0; i < numOfVars; i++){
             blockValues.pop();
@@ -622,13 +622,13 @@ public class ThighCustomListener extends ThighBaseListener {
         is_in_block = true;
         blockStack.push("if");
         valCounter.push(0);
-        LLVMGenerator.ifstart(is_in_main);
+        LLVMGenerator.ifstart(isInMain);
     }
 
 
     @Override
     public void exitIf_body(ThighParser.If_bodyContext ctx) {
-        LLVMGenerator.ifend(is_in_main);
+        LLVMGenerator.ifend(isInMain);
         Integer numOfVars = valCounter.pop();
         for(int i = 0; i < numOfVars; i++){
             blockValues.pop();
@@ -660,13 +660,13 @@ public class ThighCustomListener extends ThighBaseListener {
             VarScope scope = checkVarScope(ID);
             if (scope != VarScope.NONE) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpIntEquall(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntEquall(ID, INT, scope, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpIntMore(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntMore(ID, INT, scope, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpIntLess(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntLess(ID, INT, scope, isInMain);
                 }
             } else {
                 System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
@@ -679,13 +679,13 @@ public class ThighCustomListener extends ThighBaseListener {
             VarScope scope = checkVarScope(ID);
             if (scope != VarScope.NONE) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpIntEquall(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntEquall(ID, INT, scope, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpIntMore(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntMore(ID, INT, scope, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpIntLess(ID, INT, scope, is_in_main);
+                    LLVMGenerator.icmpIntLess(ID, INT, scope, isInMain);
                 }
             } else {
                 System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
@@ -697,13 +697,13 @@ public class ThighCustomListener extends ThighBaseListener {
             VarScope scope = checkVarScope(ID);
             if (scope != VarScope.NONE) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpRealMore(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealMore(ID, REAL, scope, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpRealLess(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealLess(ID, REAL, scope, isInMain);
                 }
             } else {
                 System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
@@ -715,13 +715,13 @@ public class ThighCustomListener extends ThighBaseListener {
             VarScope scope = checkVarScope(ID);
             if (scope != VarScope.NONE) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealEquall(ID, REAL, scope, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpRealMore(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealMore(ID, REAL, scope, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpRealLess(ID, REAL, scope, is_in_main);
+                    LLVMGenerator.icmpRealLess(ID, REAL, scope, isInMain);
                 }
             } else {
                 System.err.println("Line " + ctx.getStart().getLine() + ", unknown variable: " + ID);
@@ -751,24 +751,24 @@ public class ThighCustomListener extends ThighBaseListener {
 
             if (var_1 == VarType.DOUBLE) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpRealEquallIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpRealEquallIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpRealMoreIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpRealMoreIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpRealLessIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpRealLessIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
             }
             if (var_1 == VarType.INT) {
                 if (sign == Comparator.EQUAL) {
-                    LLVMGenerator.icmpIntEquallIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpIntEquallIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
                 if (sign == Comparator.LESS) {
-                    LLVMGenerator.icmpIntMoreIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpIntMoreIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
                 if (sign == Comparator.GREATER) {
-                    LLVMGenerator.icmpIntLessIdId(ID_1, ID_2, scope_1, scope_2, is_in_main);
+                    LLVMGenerator.icmpIntLessIdId(ID_1, ID_2, scope_1, scope_2, isInMain);
                 }
             }
 

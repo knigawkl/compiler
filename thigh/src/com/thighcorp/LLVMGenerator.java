@@ -108,8 +108,8 @@ class LLVMGenerator {
 //        register++;
 //    }
 
-    static void loadVariable(String id, VarType type, boolean is_in_main) {
-        String loadingTemplate = "%%"+ register +" = load %s, %s* " + getScopeIdentifier(is_in_main)+id+"\n";
+    static void loadVariable(String id, VarType type, boolean isInMain) {
+        String loadingTemplate = "%%"+ register +" = load %s, %s* " + getScopeIdentifier(isInMain)+id+"\n";
         switch (type) {
             case INT -> content += String.format(loadingTemplate, integerStr, integerStr);
             case DOUBLE -> content += String.format(loadingTemplate, doubleStr, doubleStr);
@@ -311,34 +311,34 @@ class LLVMGenerator {
         register++;
     }
 
-    public static void increase(String id, VarType type, boolean is_in_main) {
+    public static void increase(String id, VarType type, boolean isInMain) {
         int intSize = 4;
         int doubleSize = 8;
-        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* " + getScopeIdentifier(is_in_main) + id + ", align %s\n";
+        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* " + getScopeIdentifier(isInMain) + id + ", align %s\n";
         switch (type) {
             case INT -> {
-                loadVariable(id, VarType.INT, is_in_main);
+                loadVariable(id, VarType.INT, isInMain);
                 content += String.format(increaseTemplate, "add nsw", integerStr, 1, integerStr, integerStr, intSize);
             }
             case DOUBLE -> {
-                loadVariable(id, VarType.DOUBLE, is_in_main);
+                loadVariable(id, VarType.DOUBLE, isInMain);
                 content += String.format(increaseTemplate, "fadd ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
             }
         }
         register++;
     }
 
-    public static void decrease(String id, VarType type, boolean is_in_main) {
+    public static void decrease(String id, VarType type, boolean isInMain) {
         int intSize = 4;
         int doubleSize = 8;
-        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* " + getScopeIdentifier(is_in_main) + id + ", align %s\n";
+        var increaseTemplate = "%%" + (register + 1) + " = %s %s %%" + register + ", %s\n" + "store %s %%" + (register + 1) + ", %s* " + getScopeIdentifier(isInMain) + id + ", align %s\n";
         switch (type) {
             case INT -> {
-                loadVariable(id, VarType.INT, is_in_main);
+                loadVariable(id, VarType.INT, isInMain);
                 content += String.format(increaseTemplate, "sub nsw", integerStr, 1, integerStr, integerStr, intSize);
             }
             case DOUBLE -> {
-                loadVariable(id, VarType.DOUBLE, is_in_main);
+                loadVariable(id, VarType.DOUBLE, isInMain);
                 content += String.format(increaseTemplate, "fsub ", doubleStr, "1.000000e+00", doubleStr, doubleStr, doubleSize);
             }
         }
@@ -352,7 +352,7 @@ class LLVMGenerator {
         register = 1;
     }
 
-    public static void declareWhileCondInt(String id, String value, Comparator c, boolean is_in_main, VarScope scope) {
+    public static void declareWhileCondInt(String id, String value, Comparator c, boolean isInMain, VarScope scope) {
         br++;
         String signType = "";
         if (c == Comparator.EQUAL) {
@@ -370,7 +370,7 @@ class LLVMGenerator {
         } else {
             varType = "%";
         }
-        if (is_in_main) {
+        if (isInMain) {
             content += "br label %cond" + br + "\n";
             content += "cond" + br + ":\n";
 
@@ -398,7 +398,7 @@ class LLVMGenerator {
         brStack.push(br);
     }
 
-    public static void declareWhileCondDouble(String id, String value, Comparator sign, boolean is_in_main, VarScope scope) {
+    public static void declareWhileCondDouble(String id, String value, Comparator sign, boolean isInMain, VarScope scope) {
         br++;
         String signType = "";
         if(sign == Comparator.EQUAL){
@@ -418,7 +418,7 @@ class LLVMGenerator {
             varType = "%";
         }
 
-        if(is_in_main){
+        if(isInMain){
             content += "br label %cond"+br+"\n";
             content += "cond"+br+":\n";
 
@@ -447,9 +447,9 @@ class LLVMGenerator {
         brStack.push(br);
     }
 
-    public static void endWhile(boolean is_in_main) {
+    public static void endWhile(boolean isInMain) {
         int b = brStack.pop();
-        if(is_in_main){
+        if(isInMain){
             content += "br label %cond"+b+"\n";
             content += "false"+b+":\n";
         }else{
@@ -623,33 +623,33 @@ class LLVMGenerator {
 
     }
 
-    static void icmpIntEquallIdId(String id_1, String id_2, VarScope s_1, VarScope s_2, boolean main){
+    static void icmpIntEquallIdId(String id1, String id2, VarScope scope1, VarScope scope2, boolean isInMain){
         String varType_1;
         String varType_2;
 
-        if(s_1 == VarScope.GLOBAL){
+        if(scope1 == VarScope.GLOBAL){
             varType_1 = "@";
         }else{
             varType_1 = "%";
         }
 
-        if(s_2 == VarScope.GLOBAL){
+        if(scope2 == VarScope.GLOBAL){
             varType_2 = "@";
         }else{
             varType_2 = "%";
         }
 
-        if(main){
-            content += "%"+register+" = load i32, i32* " + varType_1 + id_1 + "\n";
+        if(isInMain){
+            content += "%"+register+" = load i32, i32* " + varType_1 + id1 + "\n";
             register++;
-            content += "%"+register+" = load i32, i32* "+ varType_2 + id_2 +"\n";
+            content += "%"+register+" = load i32, i32* "+ varType_2 + id2 +"\n";
             register++;
             content += "%"+register+" = icmp eq i32 %"+(register-1)+", %" +(register-2)+ "\n";
             register++;
         }else{
-            fun += "%"+fun_reg+" = load i32, i32* " + varType_1 + id_1 + "\n";
+            fun += "%"+fun_reg+" = load i32, i32* " + varType_1 + id1 + "\n";
             fun_reg++;
-            fun += "%"+fun_reg+" = load i32, i32* "+ varType_2 + id_2 +"\n";
+            fun += "%"+fun_reg+" = load i32, i32* "+ varType_2 + id2 +"\n";
             fun_reg++;
             fun += "%"+fun_reg+" = icmp eq i32 %"+(fun_reg-1)+", %" +(fun_reg-2)+ "\n";
             fun_reg++;
